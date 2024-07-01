@@ -23,7 +23,7 @@ import Withdrawal from './pages/OnlineBank/RB/Withdrawal'
 
 const Routes = createBrowserRouter([
   { path: '/', element: <Dashboard /> },
-  { path: '/unionbank', element: <Home /> },
+  { path: '/metrobank', element: <Home /> },
   { path: '/login', element: <Login /> },
   { path: '/signup', element: <SignUp /> },
   { path: '/account', element: <AccountSettings /> },
