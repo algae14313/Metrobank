@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Header__Home from '../../components/Header__Home'
-import test from '../../assets/test.jpg'
+import test from '../../assets/Test.png'
 
 export default function Home() {
     return (

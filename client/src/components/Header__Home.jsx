@@ -1,5 +1,5 @@
 import React from 'react'
-import Logo from '../assets/mbLogo.png'
+import Logo from '../assets/LogoUB.png'
 import { Link } from 'react-router-dom'
 
 export default function Header__Home() {
@@ -10,16 +10,16 @@ export default function Header__Home() {
                     <img src={Logo} alt="Logo" className='w-full h-full object-contain' />
                 </div>
                 <div className="h-full flex justify-center items-center gap-[3rem]">
-                    <Link to={`/metrobank`} className='text-black font-[500] text-[.9rem]'>
+                    <Link to={`/unionbank`} className='text-black font-[500] text-[.9rem]'>
                         Home
                     </Link>
-                    <Link to={`/metrobank`} className='text-black font-[500] text-[.9rem]'>
+                    <Link to={`/unionbank`} className='text-black font-[500] text-[.9rem]'>
                         Developer
                     </Link>
-                    <Link to={`/metrobank`} className='text-black font-[500] text-[.9rem]'>
+                    <Link to={`/unionbank`} className='text-black font-[500] text-[.9rem]'>
                         About Us
                     </Link>
-                    <Link to={`/metrobank`} className='text-black font-[500] text-[.9rem]'>
+                    <Link to={`/unionbank`} className='text-black font-[500] text-[.9rem]'>
                         Contact Us
                     </Link>
                     <Link to={`/login`} className='text-white font-[500] text-[.9rem] px-[1.5rem] py-[.4rem] rounded-md bg-black hover:bg-[#333333] duration-300 ease'>
