@@ -60,39 +60,37 @@ export default function Login() {
     }
 
     return (
-        <div className="w-full h-screen flex flex-col justify-start items-center">
-            <div className="w-full h-full flex">
-                <div className="w-2/3 h-full">
-                    <img src={mbLogin} alt="BG" className='w-full h-full object-cover' />
-                </div>
-                <div className="w-1/3 h-full flex justify-center items-center">
-                    <form
-                        onSubmit={handleLogin}
-                        className='w-full h-full flex flex-col justify-center items-center gap-4 px-16'>
-                        <div className="w-full h-20 flex justify-start items-center">
-                            <img src={mbLogo} alt="Logo" className='w-full h-full object-contain' />
-                        </div>
-                        <div className="w-full flex flex-col">
-                            <h1 className="text-lg font-medium">Email</h1>
-                            <input onChange={handleOnChange} type="email" name='email' className='px-4 py-2 rounded-md placeholder:text-sm' placeholder='Enter your email...' />
-                        </div>
-                        <div className="w-full flex flex-col">
-                            <h1 className="text-lg font-medium">Password</h1>
-                            <input onChange={handleOnChange} type="password" name='password' className='px-4 py-2 rounded-md placeholder:text-sm' placeholder='Enter your password...' />
-                        </div>
-                        <button type='submit' className='w-full py-3 rounded-lg text-gray-700 hover:bg-black hover:text-white duration-300 ease bg-gray-300 shadow-lg'>
-                            Login
-                        </button>
-                        <div className="w-full flex flex-col justify-start items-start">
-                            <p className='text-sm'>
-                                Don't have an account? <span className='cursor-pointer text-black underline' onClick={handleSignUp}>Sign Up.</span>
-                            </p>
-                            <p className='cursor-pointer text-sm text-black underline'>
-                                Forgot password?
-                            </p>
-                        </div>
-                    </form>
-                </div>
+        <div className="relative w-full h-screen flex flex-col justify-start items-center">
+            <div className="absolute w-2/3 h-full">
+                <img src={mbLogin} alt="BG" className='w-full h-full object-cover' />
+            </div>
+            <div className="absolute w-1/3 h-full flex justify-center items-center z-10">
+                <form
+                    onSubmit={handleLogin}
+                    className='w-full h-full flex flex-col justify-center items-center gap-4 px-16 bg-white bg-opacity-90 rounded-lg shadow-lg'>
+                    <div className="w-full h-20 flex justify-start items-center">
+                        <img src={mbLogo} alt="Logo" className='w-full h-full object-contain' />
+                    </div>
+                    <div className="w-full flex flex-col">
+                        <h1 className="text-lg font-medium">Email</h1>
+                        <input onChange={handleOnChange} type="email" name='email' className='px-4 py-2 rounded-md placeholder:text-sm' placeholder='Enter your email...' />
+                    </div>
+                    <div className="w-full flex flex-col">
+                        <h1 className="text-lg font-medium">Password</h1>
+                        <input onChange={handleOnChange} type="password" name='password' className='px-4 py-2 rounded-md placeholder:text-sm' placeholder='Enter your password...' />
+                    </div>
+                    <button type='submit' className='w-full py-3 rounded-lg text-gray-700 hover:bg-black hover:text-white duration-300 ease bg-gray-300 shadow-lg'>
+                        Login
+                    </button>
+                    <div className="w-full flex flex-col justify-start items-start">
+                        <p className='text-sm'>
+                            Don't have an account? <span className='cursor-pointer text-black underline' onClick={handleSignUp}>Sign Up.</span>
+                        </p>
+                        <p className='cursor-pointer text-sm text-black underline'>
+                            Forgot password?
+                        </p>
+                    </div>
+                </form>
             </div>
         </div>
     )
