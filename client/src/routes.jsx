@@ -23,7 +23,7 @@ import Withdrawal from './pages/OnlineBank/RB/Withdrawal'
 
 const Routes = createBrowserRouter([
   { path: '/', element: <Login /> },
-  { path: '/dashboard', element: <Dashboard /> },
+  { path: '/dash', element: <Dashboard /> },
   { path: '/metrobank', element: <Home /> },
   { path: '/login', element: <Login /> },
   { path: '/signup', element: <SignUp /> },
