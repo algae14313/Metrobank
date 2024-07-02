@@ -7,8 +7,8 @@ export default function Home() {
     return (
         <div className='w-full h-screen flex justify-start items-center flex-col'>
             <Header__Home />
-            <div className="w-full h-full p-[5rem]">
-                <img src={test} alt="asd" className='w-full h-full object-cover' />
+            <div className="w-full h-full p-[5rem] flex justify-start items-center">
+                <img src={test} alt="asd" className='w-200 h-200 object-cover' />
             </div>
             
         </div>

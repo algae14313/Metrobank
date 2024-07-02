@@ -22,8 +22,9 @@ import Deposit from './pages/OnlineBank/RB/Deposit'
 import Withdrawal from './pages/OnlineBank/RB/Withdrawal'
 
 const Routes = createBrowserRouter([
-  { path: '/', element: <Dashboard /> },
-  { path: '/unionbank', element: <Home /> },
+  { path: '/', element: <Login /> },
+  { path: '/dashboard', element: <Dashboard /> },
+  { path: '/metrobank', element: <Home /> },
   { path: '/login', element: <Login /> },
   { path: '/signup', element: <SignUp /> },
   { path: '/account', element: <AccountSettings /> },

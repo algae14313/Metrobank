@@ -22,7 +22,7 @@ export default function Header__Home() {
                     <Link to={`/unionbank`} className='text-black font-[500] text-[.9rem]'>
                         Contact Us
                     </Link>
-                    <Link to={`/login`} className='text-white font-[500] text-[.9rem] px-[1.5rem] py-[.4rem] rounded-md bg-black hover:bg-[#333333] duration-300 ease'>
+                    <Link to={`/login`} className='text-white font-[500] text-[.9rem] px-[1.5rem] py-[.4rem] rounded-md bg-[#001A88] hover:bg-[#333333] duration-300 ease'>
                         Login
                     </Link>
                 </div>
