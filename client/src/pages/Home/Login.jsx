@@ -66,20 +66,17 @@ export default function Login() {
     return (
         <>
             <div className="w-full h-screen flex flex-col justify-start items-center" style={{ backgroundColor: '#E6E6E6' }}>
-                <div className="w-full h-full flex justify-start items-center">
-                    <div className="w-[70%] h-full flex justify-start items-center">
-                        <img src={LoginBG} alt="BG" className='w-full h-full object-cover' />
-                    </div>
+                <div className="w-full h-full flex justify-end items-center">
                     <div className="w-[30%] h-full flex justify-center items-center">
                         <form
                             onSubmit={handleLogin}
                             className='w-full h-full flex flex-col justify-center items-center gap-[1rem] px-[4rem]'>
                             <div className="w-full h-[5rem] flex justify-start items-center">
-                                <img src={LogoUB} alt="BG" className='w-full h-full object-contain' />
+                                <img src={LogoUB} alt="Logo" className='w-full h-full object-contain' />
                             </div>
                             <div className="w-full flex flex-col">
                                 <h1>Email</h1>
-                                <input onChange={handleOnChange} type="text" name='email' inputMode='numeric' className='px-[1rem] rounded-md placeholder:text-[.8rem]' placeholder='Enter your email...' />
+                                <input onChange={handleOnChange} type="text" name='email' className='px-[1rem] rounded-md placeholder:text-[.8rem]' placeholder='Enter your email...' />
                             </div>
                             <div className="w-full flex flex-col">
                                 <h1>Password</h1>
@@ -97,6 +94,9 @@ export default function Login() {
                                 </p>
                             </div>
                         </form>
+                    </div>
+                    <div className="w-[70%] h-full flex justify-end items-center">
+                        <img src={LoginBG} alt="Background" className='w-full h-full object-cover' />
                     </div>
                 </div>
             </div>
