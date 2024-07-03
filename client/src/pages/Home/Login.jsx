@@ -87,9 +87,9 @@ export default function Login() {
                             </button>
                             <div className="w-full flex flex-col justify-start items-start">
                                 <p className='text-[.8rem]'>
-                                    Don't have an account? <span className='cursor-pointer text-black text-decoration-line: underline' onClick={handleSignUp}>Sign Up.</span>
+                                    Don't have an account? <span className='cursor-pointer text-black text-decoration-line: underline hover:text-[#001A88]' onClick={handleSignUp}>Sign Up.</span>
                                 </p>
-                                <p className='cursor-pointer text-[.8rem] text-black text-decoration-line: underline'>
+                                <p className='cursor-pointer text-[.8rem] text-black text-decoration-line: underline hover:text-[#001A88]'>
                                     Forgot password?
                                 </p>
                             </div>
