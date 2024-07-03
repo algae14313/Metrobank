@@ -44,7 +44,7 @@ export default function SignUp() {
                 alert(res.data.message)
 
             } else {
-                alert('Password do not match')
+                alert('Passwords do not match')
             }
         } catch (error) {
             console.error(error)
@@ -80,11 +80,8 @@ export default function SignUp() {
 
     return (
         <>
-            <div className="w-full h-screen flex flex-col justify-start items-center" style={{ backgroundColor: '#E6E6E6' }}>
+            <div className="w-full h-screen flex flex-col justify-start items-center" >
                 <div className="w-full h-full flex justify-start items-center">
-                    <div className="w-[70%] h-full flex justify-start items-center">
-                        <img src={LoginBG} alt="BG" className='w-full h-full object-cover' />
-                    </div>
                     <div className="w-[30%] h-full flex justify-center items-center">
                         <form
                             onSubmit={handleSignUp}
@@ -121,6 +118,9 @@ export default function SignUp() {
                                 </p>
                             </div>
                         </form>
+                    </div>
+                    <div className="w-[70%] h-full flex justify-start items-center">
+                        <img src={LoginBG} alt="BG" className='w-full h-full object-cover' />
                     </div>
                 </div>
             </div>

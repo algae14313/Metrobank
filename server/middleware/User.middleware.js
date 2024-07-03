@@ -26,15 +26,15 @@ const UserMidlleware = {
     },
     CheckDeveloperTokenValid: async (req, res, next) => {
         try {
-            const authHeader = req.headers['authorization']
-            const token = authHeader && authHeader.split(' ')[1]
-            if (token === null) return res.json({ authorization: `You are not authorized: null` })
-            if (token === undefined) return res.json({ authorization: `You are not authorized: undefined` })
-
-            if (token === process.env.ADMIN_TOKEN) return next()
-            res.json({ success: false, message: 'A token is required, nor token is incorrect!' })
+            const authHeader = req.headers['authorization'];
+            const token = authHeader && authHeader.split(' ')[1];
+            if (!token) return res.json({ authorization: 'You are not authorized: No token provided' });
+    
+            if (token === process.env.ADMIN_TOKEN) return next();
+            res.json({ success: false, message: 'A token is required, or token is incorrect!' });
         } catch (error) {
-            res.status(400).json({ error: `CheckDeveloperTokenValid in user middleware error ${error}` });
+            console.error(`CheckDeveloperTokenValid Error: ${error.message}`, error);
+            res.status(400).json({ error: `CheckDeveloperTokenValid in user middleware error: ${error.message}` });
         }
     },
     LoginUserCheckEmptyFields: async (req, res, next) => {
@@ -79,39 +79,38 @@ const UserMidlleware = {
     },
     CreateUserCheckEmptyFields: async (req, res, next) => {
         try {
-            next()
+            const { name, email, mobileno, password } = req.body;
+            if (!name || !email || !mobileno || !password) {
+                return res.json({ success: false, message: 'Required fields should not be empty.' });
+            }
+            next();
         } catch (error) {
-            res.status(400).json({ error: `CreateUserCheckEmptyFields in user middleware error ${error}` });
+            console.error(`CreateUserCheckEmptyFields Error: ${error.message}`, error);
+            res.status(400).json({ error: `CreateUserCheckEmptyFields in user middleware error: ${error.message}` });
         }
     },
     CreateUserCheckUserIfExists: async (req, res, next) => {
         try {
-            const { email, mobileno } = req.body
-            const testEmail = await UserModel.find(
-                {
-                    email: { $regex: new RegExp(email, 'i') }
-                }
-            )
-            const testMobileNo = await UserModel.find(
-                {
-                    mobileno: { $regex: new RegExp(mobileno, 'i') }
-                }
-            )
-            if (testEmail.length > 0) return res.json({ success: false, message: 'Email already exists!' })
-            if (testMobileNo.length > 0) return res.json({ success: false, message: 'Mobile number already exists!' })
-            next()
+            const { email, mobileno } = req.body;
+            const testEmail = await UserModel.find({ email: email });
+            const testMobileNo = await UserModel.find({ mobileno: mobileno });
+            if (testEmail.length > 0) return res.json({ success: false, message: 'Email already exists!' });
+            if (testMobileNo.length > 0) return res.json({ success: false, message: 'Mobile number already exists!' });
+            next();
         } catch (error) {
-            res.status(400).json({ error: `CreateUserCheckUserIfExists in user middleware error ${error}` });
+            console.error(`CreateUserCheckUserIfExists Error: ${error.message}`, error);
+            res.status(400).json({ error: `CreateUserCheckUserIfExists in user middleware error: ${error.message}` });
         }
     },
     CreateUserHashedPassword: async (req, res, next) => {
         try {
-            const values = req.body
-            const hash = await bcrypt.hash(values.password, 10)
-            values.password = hash
-            next()
+            const values = req.body;
+            const hash = await bcrypt.hash(values.password, 10);
+            values.password = hash;
+            next();
         } catch (error) {
-            res.status(400).json({ error: `CreateUserHashedPassword in user middleware error ${error}` });
+            console.error(`CreateUserHashedPassword Error: ${error.message}`, error);
+            res.status(400).json({ error: `CreateUserHashedPassword in user middleware error: ${error.message}` });
         }
     },
     UpdateUserCheckEmptyFields: async (req, res, next) => {
