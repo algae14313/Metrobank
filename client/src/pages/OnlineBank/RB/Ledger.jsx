@@ -27,7 +27,7 @@ export default function Ledger() {
     const fetchCredentials = async () => {
         try {
             const credentials = sessionStorage.getItem('credentials')
-            if (!credentials) return navigate('/unionbank')
+            if (!credentials) return navigate('/metrobank')
             const { userId, role } = JSON.parse(credentials)
             setDetails((prev) => ({
                 ...prev,

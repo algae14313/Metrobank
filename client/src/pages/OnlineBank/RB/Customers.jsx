@@ -28,7 +28,7 @@ export default function Customers() {
     const fetchCredentials = async () => {
         try {
             const credentials = sessionStorage.getItem('credentials')
-            if (!credentials) return navigate('/unionbank')
+            if (!credentials) return navigate('/metrobank')
 
         } catch (error) {
             console.error(error)

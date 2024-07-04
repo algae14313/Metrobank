@@ -30,7 +30,7 @@ export default function OpenAccount() {
             const credentials = sessionStorage.getItem('credentials')
             const customerdetails = sessionStorage.getItem('customerdetails')
 
-            if (!credentials) return navigate('/unionbank')
+            if (!credentials) return navigate('/metrobank')
             const { firstname, lastname, email, mobileno } = JSON.parse(customerdetails)
             const fullname = firstname + " " + lastname
 

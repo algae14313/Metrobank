@@ -19,7 +19,7 @@ export default function Dashboard() {
     const fetchCredentials = async () => {
         try {
             const credentials = sessionStorage.getItem('credentials')
-            if (!credentials) return navigate('/unionbank')
+            if (!credentials) return navigate('/metrobank')
             const { userId, role } = JSON.parse(credentials)
             setRole(role)
 
