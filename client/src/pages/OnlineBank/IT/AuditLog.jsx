@@ -63,7 +63,7 @@ export default function AuditLog() {
     const fetchCredentials = () => {
         try {
             const credentials = sessionStorage.getItem('credentials')
-            if (!credentials) return navigate('/unionbank')
+            if (!credentials) return navigate('/metrobank')
         } catch (error) {
             console.error(error)
         }
