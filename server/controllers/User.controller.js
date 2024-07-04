@@ -4,16 +4,12 @@ const UserModel = require('../models/Users.model')
 const UserController = {
     CreateUser: async (req, res) => {
         try {
-            console.log('CreateUser Request Body:', req.body);
-            const { name, email, mobileno, password } = req.body;
-            if (!name || !email || !mobileno || !password) {
-                return res.json({ success: false, message: 'All fields are required.' });
-            }
-            const data = await UserModel.create({ name, email, mobileno, password });
-            res.json({ success: true, message: 'User created successfully!', data: data?._id });
+            const { name, email, mobileno, password } = req.body
+            // console.log('Create User Controller: ', values)
+            const data = await UserModel.create({ name, email, mobileno, password })
+            res.json({ success: true, message: 'User created successfully!', data: data?._id })
         } catch (error) {
-            console.error(`CreateUser Error: ${error.message}`, error);
-            res.json({ error: `CreateUser in user controller error: ${error.message}` });
+            res.json({ error: `CreateUser in user controller error ${error}` });
         }
     },
     GetAllUsers: async (req, res) => {

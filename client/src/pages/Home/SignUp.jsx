@@ -80,7 +80,7 @@ export default function SignUp() {
 
     return (
         <>
-            <div className="w-full h-screen flex flex-col justify-start items-center" >
+            <div className="w-full h-screen flex flex-col justify-start items-center" style={{ backgroundColor: '#E6E6E6' }}>
                 <div className="w-full h-full flex justify-start items-center">
                     <div className="w-[30%] h-full flex justify-center items-center">
                         <form
