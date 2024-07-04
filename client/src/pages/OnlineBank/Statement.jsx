@@ -1,40 +1,25 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import Sidebar from '../../../components/Sidebar'
-import Header__Dashboard from '../../../components/Header__dashboard'
-import DataGrids from '../../../components/DataGrids'
+import Sidebar from '../../components/Sidebar';
+import Header__Dashboard from '../../components/Header__dashboard';
+import DataGrids from '../../components/DataGrids';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 const { VITE_HOST, VITE_ADMIN_TOKEN } = import.meta.env
 
-export default function Ledger() {
-    const { accountid } = useParams()
-    const [values, setValues] = useState([])
-    const [details, setDetails] = useState({
-        role: '',
-        uid: ''
-    })
+export default function Transactions() {
+    const [value, setValue] = useState('1');
     const [userTransactions, setUserTransactions] = useState([])
     const navigate = useNavigate()
 
     useEffect(() => {
-        fetchCredentials();
-    }, []);
-
-    useEffect(() => {
+        fetchCredentials()
         fetchUserTransactions()
-    }, []);
+    }, [])
 
-    const fetchCredentials = async () => {
+    const fetchCredentials = () => {
         try {
             const credentials = sessionStorage.getItem('credentials')
             if (!credentials) return navigate('/unionbank')
-            const { userId, role } = JSON.parse(credentials)
-            setDetails((prev) => ({
-                ...prev,
-                role: role,
-                uid: userId
-            }))
-
         } catch (error) {
             console.error(error)
         }
@@ -42,7 +27,10 @@ export default function Ledger() {
 
     const fetchUserTransactions = async () => {
         try {
-            const res = await axios.get(`${VITE_HOST}/api/transactions/${accountid}`, {
+            const credentials = sessionStorage.getItem('credentials')
+            const { userId } = JSON.parse(credentials)
+
+            const res = await axios.get(`${VITE_HOST}/api/transactions/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${VITE_ADMIN_TOKEN}`
                 }
@@ -64,6 +52,10 @@ export default function Ledger() {
             console.error(error)
         }
     }
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
 
     const renderDebitCell = (params) => {
         return (
@@ -113,16 +105,16 @@ export default function Ledger() {
             align: 'center'
         },
         {
-            field: 'withdrawal',
-            headerName: 'Withdrawal',
+            field: 'debit',
+            headerName: 'Debit (PHP)',
             width: 200,
             headerAlign: 'center',
             align: 'center',
             renderCell: renderDebitCell
         },
         {
-            field: 'deposit',
-            headerName: 'Deposit',
+            field: 'credit',
+            headerName: 'Credit (PHP)',
             width: 200,
             headerAlign: 'center',
             align: 'center',
@@ -149,24 +141,14 @@ export default function Ledger() {
             <div className="flex">
                 <Sidebar />
                 <div className="w-[80%] h-screen flex flex-col justify-start items-start p-[1rem] overflow-auto">
-                    <Header__Dashboard title={`View Statement`} linkName={`View Accounts`} link={`/ledger`} />
+                    <Header__Dashboard title={`View Statement`} />
                     <div className="w-full h-[95%] flex flex-col justify-start items-start gap-[1rem]">
                         <div className="w-full h-[5%]">
                             <h1 className='text-black font-[600] text-[1.2rem]'>
                                 Transaction History
                             </h1>
                         </div>
-                        <div className="w-full h-[5%] flex justify-start items-center gap-[1rem]">
-                            <h1>
-                                Search
-                            </h1>
-                            <input
-                                type="text"
-                                className="block w-[20rem] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                placeholder='Search here...'
-                            />
-                        </div>
-                        <div className="w-full h-[80%]">
+                        <div className="w-full h-[90%]">
                             <DataGrids columnsTest={UserColumns} rowsTest={userTransactions} descCol={`id`} colVisibility={{ id: false }} />
                         </div>
                     </div>

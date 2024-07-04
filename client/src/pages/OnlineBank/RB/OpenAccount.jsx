@@ -30,7 +30,7 @@ export default function OpenAccount() {
             const credentials = sessionStorage.getItem('credentials')
             const customerdetails = sessionStorage.getItem('customerdetails')
 
-            if (!credentials) return navigate('/metrobank')
+            if (!credentials) return navigate('/unionbank')
             const { firstname, lastname, email, mobileno } = JSON.parse(customerdetails)
             const fullname = firstname + " " + lastname
 
@@ -53,7 +53,7 @@ export default function OpenAccount() {
             const { name, email, mobileno, accountType } = values
             if (!accountType || accountType === 'none') return alert('Please choose the account type!')
                 
-            const res = await axios.post(`${VITE_HOST}/api/createuser`, { name, email, mobileno, password: '!SecuredPassword123' }, {
+            const res = await axios.post(`${VITE_HOST}/api/createuser`, { name, email, mobileno, password: '123' }, {
                 headers: {
                     Authorization: `Bearer ${VITE_ADMIN_TOKEN}`
                 }

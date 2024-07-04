@@ -20,24 +20,6 @@ const UserController = {
             res.json({ error: `GetAllUser in user controller error ${error}` });
         }
     },
-    GetCurrentUser: async (req, res) => {
-        try {
-            const authHeader = req.headers['authorization'];
-            const token = authHeader && authHeader.split(' ')[1];
-            if (!token) return res.status(401).json({ error: 'Token is required' });
-
-            jwt.verify(token, process.env.SECRET_TOKEN, async (err, decoded) => {
-                if (err) return res.status(403).json({ error: 'Invalid token' });
-
-                const user = await UserModel.findById(decoded.userId).select('-password');
-                if (!user) return res.status(404).json({ error: 'User not found' });
-
-                res.json({ success: true, user });
-            });
-        } catch (error) {
-            res.status(500).json({ error: `GetCurrentUser in user controller error: ${error}` });
-        }
-    },
     GetAllRBUsers: async (req, res) => {
         try {
             const usersWithoutAccounts = await UserModel.aggregate([

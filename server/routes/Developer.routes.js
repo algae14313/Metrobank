@@ -12,27 +12,33 @@ router.post('/createdevelopertoken/:userId',
     DeveloperController.CreateDeveloperToken
 )
 
-router.post('/developer/deposittransaction',
+// router.post('/developer/deposittransaction',
+//     DeveloperMiddleware.CheckDeveloperTokenValid,
+//     TransactionMiddleware.CreateTransactionCheckEmptyFields,
+//     DeveloperController.DepositTransaction
+// )
+
+// router.post('/developer/withdrawtransaction',
+//     DeveloperMiddleware.CheckDeveloperTokenValid,
+//     TransactionMiddleware.CreateTransactionCheckEmptyFields,
+//     DeveloperController.WithdrawTransaction
+// )
+
+router.get('/unionbank/account/:accountno',
     DeveloperMiddleware.CheckDeveloperTokenValid,
     TransactionMiddleware.CreateTransactionCheckEmptyFields,
-    DeveloperController.DepositTransaction
+    DeveloperController.GetRequestAccountNo
 )
 
-router.post('/developer/withdrawtransaction',
-    DeveloperMiddleware.CheckDeveloperTokenValid,
-    TransactionMiddleware.CreateTransactionCheckEmptyFields,
-    DeveloperController.WithdrawTransaction
-)
-
-router.post('/developer/transfertransaction',
+router.post('/unionbank/transfertransaction',
     DeveloperMiddleware.CheckDeveloperTokenValid,
     TransactionMiddleware.CreateTransactionCheckEmptyFields,
     DeveloperController.TransferTransaction
 )
 
-router.get('/tokens',
+router.get('/tokens/:userId',
     DeveloperMiddleware.CheckDeveloperTokenValid,
-    DeveloperController.GetAllTokens
+    DeveloperController.GetUserTokens
 )
 
 router.post('/deletetoken/:developerId',

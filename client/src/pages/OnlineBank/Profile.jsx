@@ -3,7 +3,7 @@ import Sidebar from '../../components/Sidebar'
 import Header from '../../components/Header__dashboard'
 import { useNavigate } from 'react-router-dom'
 
-export default function AccountSettings() {
+export default function Profile() {
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -13,14 +13,14 @@ export default function AccountSettings() {
     const fetchCredentials = () => {
         try {
             const credentials = sessionStorage.getItem('credentials')
-            if (!credentials) return navigate('/metrobank')
+            if (!credentials) return navigate('/unionbank')
         } catch (error) {
             console.error(error)
         }
     }
 
     const handleEdit = () => {
-        navigate('/account/updateaccount')
+        navigate('/profile/updateprofile')
     }
     return (
         <>
@@ -56,7 +56,7 @@ export default function AccountSettings() {
                                         onClick={handleEdit}
                                         className="rounded-md bg-[#111111] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#333333] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                     >
-                                        Edit Account
+                                        Edit Profile
                                     </button>
                                 </div>
                             </dl>

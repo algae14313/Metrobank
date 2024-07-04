@@ -19,7 +19,7 @@ export default function Deposit() {
     const fetchCredentials = () => {
         try {
             const credentials = sessionStorage.getItem('credentials')
-            if (!credentials) return navigate('/metrobank')
+            if (!credentials) return navigate('/unionbank')
         } catch (error) {
             console.error(error)
         }
@@ -28,10 +28,13 @@ export default function Deposit() {
     const handleDeposit = async (e) => {
         try {
             e.preventDefault()
+            const credentials = sessionStorage.getItem('credentials')
+            const { userId } = JSON.parse(credentials)
             const { account, amount } = values
             const res = await axios.post(`${VITE_HOST}/api/deposittransaction`, { account, amount }, {
                 headers: {
-                    Authorization: `Bearer ${VITE_ADMIN_TOKEN}`
+                    Authorization: `Bearer ${VITE_ADMIN_TOKEN}`,
+                    userId: userId
                 }
             })
             if (res?.data?.success) return alert(res?.data?.message)
@@ -91,7 +94,6 @@ export default function Deposit() {
                                                     id="account"
                                                     autoComplete="account"
                                                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                                    placeholder="4757****"
                                                     required
                                                 />
                                             </div>
@@ -112,7 +114,6 @@ export default function Deposit() {
                                                     id="amount"
                                                     autoComplete="amount"
                                                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                                    placeholder="100.00"
                                                     required
                                                 />
                                             </div>

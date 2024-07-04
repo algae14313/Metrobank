@@ -19,7 +19,7 @@ export default function Withdrawal() {
     const fetchCredentials = () => {
         try {
             const credentials = sessionStorage.getItem('credentials')
-            if (!credentials) return navigate('/metrobank')
+            if (!credentials) return navigate('/unionbank')
         } catch (error) {
             console.error(error)
         }
@@ -29,10 +29,13 @@ export default function Withdrawal() {
     const handleWithdrawal = async (e) => {
         try {
             e.preventDefault()
+            const credentials = sessionStorage.getItem('credentials')
+            const { userId } = JSON.parse(credentials)
             const { account, amount } = values
             const res = await axios.post(`${VITE_HOST}/api/withdrawtransaction`, { account, amount }, {
                 headers: {
-                    Authorization: `Bearer ${VITE_ADMIN_TOKEN}`
+                    Authorization: `Bearer ${VITE_ADMIN_TOKEN}`,
+                    userId: userId
                 }
             })
             if (res?.data?.success) return alert(res?.data?.message)
@@ -92,7 +95,6 @@ export default function Withdrawal() {
                                                     id="account"
                                                     autoComplete="account"
                                                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                                    placeholder="4757****"
                                                     required
                                                 />
                                             </div>
@@ -114,7 +116,6 @@ export default function Withdrawal() {
                                                     id="amount"
                                                     autoComplete="amount"
                                                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                                    placeholder="100.00"
                                                 />
                                             </div>
                                         </div>
@@ -126,7 +127,7 @@ export default function Withdrawal() {
                                     type="submit"
                                     className="rounded-md bg-[#111111] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#333333] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                 >
-                                    Deposit
+                                    Withdraw
                                 </button>
                             </div>
                         </div>

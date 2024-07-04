@@ -9,7 +9,7 @@ const AccountController = {
             const data = await AccountModel.create({ userId, accountno: accno, accountType })
             res.json({ success: true, message: 'Account created successfully!', data })
         } catch (error) {
-            res.status(400).json({ error: `CreateAccount in account controller error ${error}` });
+            res.json({ error: `CreateAccount in account controller error ${error}` });
         }
     },
     GetAllAccount: async (req, res) => {
@@ -17,7 +17,23 @@ const AccountController = {
             const data = await AccountModel.find()
             res.json({ success: true, message: 'Fetch accounts successfully!', data })
         } catch (error) {
-            res.status(400).json({ error: `GetAllAccount in account controller error ${error}` });
+            res.json({ error: `GetAllAccount in account controller error ${error}` });
+        }
+    },
+    GetUserAccount: async (req, res) => {
+        try {
+            const { uid } = req.params
+
+            const { _id, userId, accountno, accountType, balance, isactive } = await AccountModel.findOne({ userId: uid })
+            console.log({ _id, userId, accountno, accountType, balance, isactive })
+            const formattedBalance = new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(balance);
+
+            res.json({ success: true, message: 'Fetch accounts successfully!', data: { _id, userId, accountno, accountType, balance: formattedBalance, isactive } })
+        } catch (error) {
+            res.json({ error: `GetUserAccount in account controller error ${error}` });
         }
     },
     SearchAccount: async (req, res) => {
@@ -26,9 +42,10 @@ const AccountController = {
             console.log('Search Account Controller: ', userId)
 
             const data = await AccountModel.find({ user: userId })
+
             res.json({ success: true, message: 'Fethced certain account successfully!', data })
         } catch (error) {
-            res.status(400).json({ error: `SearchAccount in account controller error ${error}` });
+            res.json({ error: `SearchAccount in account controller error ${error}` });
         }
     },
     UpdateAccount: async (req, res) => {
@@ -40,7 +57,7 @@ const AccountController = {
 
             res.json({ success: true, message: 'Account updated successfully!', values, accountId })
         } catch (error) {
-            res.status(400).json({ error: `UpdateAccount in account controller error ${error}` });
+            res.json({ error: `UpdateAccount in account controller error ${error}` });
         }
     },
     UpdateActiveAccount: async (req, res) => {
@@ -56,7 +73,7 @@ const AccountController = {
             )
             res.json({ success: true, message: 'Account active updated successfully!', data })
         } catch (error) {
-            res.status(400).json({ error: `UpdateActiveAccount in account controller error ${error}` });
+            res.json({ error: `UpdateActiveAccount in account controller error ${error}` });
         }
     }
 }
