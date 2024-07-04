@@ -14,7 +14,7 @@ export default function Dashboard() {
     const fetchCredentials = () => {
         try {
             const credentials = localStorage.getItem('credentials')
-            if (!credentials) return navigate('/unionbank')
+            if (!credentials) return navigate('/metrobank')
         } catch (error) {
             console.error(error)
         }
@@ -43,7 +43,7 @@ export default function Dashboard() {
                                 </div>
                                 <div className="w-full flex justify-between items-center">
                                     <h1 className='text-white'>Current Balance</h1>
-                                    <h1 className='text-white'>PHP 15,993.04</h1>
+                                    <h1 className='text-white'>PHP 742,747.00</h1>
                                 </div>
                             </Link>
                         </div>
