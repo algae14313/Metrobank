@@ -1,11 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-export default function Toggle({ isCheck }) {
-    const [isChecked, setIsChecked] = useState(isCheck);
+export default function Toggle({ isCheck, returnCheck }) {
+    const [isChecked, setIsChecked] = useState(isCheck)
+
+    useEffect(()=> {
+        returnCheck(isChecked)
+    },[isChecked])
 
     const handleToggleState = () => {
-        setIsChecked(!isChecked)
-    }
+        setIsChecked(prev => !prev)
+    };
     return (
         <>
             <label className='flex cursor-pointer select-none items-center'>
