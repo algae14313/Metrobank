@@ -4,6 +4,7 @@ const router = express.Router()
 const DeveloperController = require('../controllers/Developer.controller')
 const DeveloperMiddleware = require('../middleware/Developer.middleware')
 const TransactionMiddleware = require('../middleware/Transaction.middleware')
+const UserMiddleware = require('../middleware/User.middleware')
 
 router.post('/createdevelopertoken/:userId',
     DeveloperMiddleware.CheckAdminTokenValid,
@@ -11,18 +12,6 @@ router.post('/createdevelopertoken/:userId',
     DeveloperMiddleware.CreateDeveloperTokenHashed,
     DeveloperController.CreateDeveloperToken
 )
-
-// router.post('/developer/deposittransaction',
-//     DeveloperMiddleware.CheckDeveloperTokenValid,
-//     TransactionMiddleware.CreateTransactionCheckEmptyFields,
-//     DeveloperController.DepositTransaction
-// )
-
-// router.post('/developer/withdrawtransaction',
-//     DeveloperMiddleware.CheckDeveloperTokenValid,
-//     TransactionMiddleware.CreateTransactionCheckEmptyFields,
-//     DeveloperController.WithdrawTransaction
-// )
 
 router.get('/unionbank/account/:accountno',
     DeveloperMiddleware.CheckDeveloperTokenValid,
@@ -32,6 +21,7 @@ router.get('/unionbank/account/:accountno',
 
 router.post('/unionbank/transfertransaction',
     DeveloperMiddleware.CheckDeveloperTokenValid,
+    TransactionMiddleware.CheckAccountIfExist,
     TransactionMiddleware.CreateTransactionCheckEmptyFields,
     DeveloperController.TransferTransaction
 )
@@ -44,6 +34,21 @@ router.get('/tokens/:userId',
 router.post('/deletetoken/:developerId',
     DeveloperMiddleware.CheckDeveloperTokenValid,
     DeveloperController.DeleteToken
+)
+
+router.get('/it/auditlog',
+    UserMiddleware.CheckDeveloperTokenValid,
+    DeveloperController.GetAllAuditLog
+)
+
+router.get('/it/backup',
+    UserMiddleware.CheckDeveloperTokenValid,
+    DeveloperController.BackUp
+)
+
+router.get('/it/restore',
+    UserMiddleware.CheckDeveloperTokenValid,
+    DeveloperController.Restore
 )
 
 module.exports = router

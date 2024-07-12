@@ -1,10 +1,26 @@
 const UserModel = require('../models/Users.model')
-const DeveloperModel = require('../models/Developer.model')
-const AccountModel = require('../models/Account.model')
-const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const AuditLog = require('../models/Auditlog.model')
+const OtpModel = require('../models/Otp.model')
+const nodemailer = require('nodemailer');
 require('dotenv').config()
+
+const Log = async ({ userId, action, collectionName, documentId, changes, description }) => {
+    await AuditLog.create({ userId, action, collectionName, documentId, changes, description })
+}
+
+const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true, // Use `true` for port 465, `false` for all other ports
+    auth: {
+        user: 'yourparengedison@gmail.com',
+        pass: process.env.EmailPassword
+    },
+});
+
+
 
 const UserMidlleware = {
     CheckUserTokenValid: async (req, res, next) => {
@@ -21,7 +37,7 @@ const UserMidlleware = {
                 next()
             })
         } catch (error) {
-            res.status(400).json({ error: `CheckUserTokenValid in user middleware error ${error}` });
+            res.json({ error: `CheckUserTokenValid in user middleware error ${error}` });
         }
     },
     CheckDeveloperTokenValid: async (req, res, next) => {
@@ -34,7 +50,7 @@ const UserMidlleware = {
             if (token === process.env.ADMIN_TOKEN) return next()
             res.json({ success: false, message: 'A token is required, nor token is incorrect!' })
         } catch (error) {
-            res.status(400).json({ error: `CheckDeveloperTokenValid in user middleware error ${error}` });
+            res.json({ error: `CheckDeveloperTokenValid in user middleware error ${error}` });
         }
     },
     LoginUserCheckEmptyFields: async (req, res, next) => {
@@ -43,17 +59,18 @@ const UserMidlleware = {
             if (!email || !password) return res.json({ success: false, message: 'Required fields should not be empty.' })
             next()
         } catch (error) {
-            res.status(400).json({ error: `LoginUserCheckEmptyFields in user middleware error ${error}` });
+            res.json({ error: `LoginUserCheckEmptyFields in user middleware error ${error}` });
         }
     },
     LoginUserCheckEmail: async (req, res, next) => {
         try {
             const { email } = req.body
             const testEmail = await UserModel.findOne({ email: email })
-            if (testEmail.length > 0) return res.json({ success: false, message: 'User not found.', testEmail })
+
+            if (!testEmail) return res.json({ success: false, message: 'User not found.', testEmail })
             next()
         } catch (error) {
-            res.status(400).json({ error: `LoginUserCheckUsername in user middleware error ${error}` });
+            res.json({ error: `LoginUserCheckEmail in user middleware error ${error}` });
         }
     },
     LoginUserCheckPassword: async (req, res) => {
@@ -65,8 +82,30 @@ const UserMidlleware = {
                 const testPassword = await bcrypt.compare(password, user.password)
 
                 if (testPassword) {
-                    const token = jwt.sign({ userId: user._id }, process.env.SECRET_TOKEN, { expiresIn: '1d' })
-                    res.json({ success: true, message: 'Login Successful.', token, name: user.name, userId: user._id, role: user.role })
+                    let otp;
+                    let testOtp;
+                    do {
+                        otp = Math.floor(100000 + Math.random() * 900000).toString();
+                        testOtp = await OtpModel.findOne({ otp: otp });
+                    } while (testOtp);
+
+                    await OtpModel.create({ user: user._id, otp: otp })
+                    
+                    await transporter.sendMail({
+                        from: `"UnionBank 👻" <yourparengedison@gmail.com>`,
+                        to: email,
+                        subject: "Your UnionBank Verification Code",
+                        html: `
+                                <h3>Please do not share your one-time-password.<h3/> <br />
+                                <h1>${otp}<h1/>
+                                `
+                    });
+
+                    // const token = jwt.sign({ userId: user._id }, process.env.SECRET_TOKEN, { expiresIn: '1d' })
+                    Log({ userId: user?._id, action: 'read', collectionName: 'User', documentId: user?._id, description: `${email} attempted to login` })
+
+                    // res.json({ success: true, message: 'Login Successful.', token, name: user.name, userId: user._id, role: user.role })
+                    res.json({ success: true, message: 'Login Successful.' })
                 } else {
                     res.json({ success: false, message: 'Email or password is Incorrect!' })
                 }
@@ -74,14 +113,56 @@ const UserMidlleware = {
                 res.json({ success: false, message: 'Email or password is Incorrect!' })
             }
         } catch (error) {
-            res.status(400).json({ error: `LoginUserCheckPassword in user middleware error ${error}` });
+            res.json({ error: `LoginUserCheckPassword in user middleware error ${error}` });
         }
+    },
+    EmailVerification: async (req, res, next) => {
+        try {
+            const { otp } = req.body
+
+            if (!otp) return res.json({ success: false, message: 'One-time-password must not be empty.' })
+
+            const testOtp = await OtpModel.findOne({ otp: otp })
+            if (testOtp) {
+                const userCred = await UserModel.findById(testOtp.user)
+                const token = jwt.sign({ userId: userCred._id }, process.env.SECRET_TOKEN, { expiresIn: '1d' })
+
+                res.json({ success: true, message: 'User verified.', token, name: userCred.name, userId: userCred._id, role: userCred.role })
+            } else {
+                res.json({ success: false, message: 'Invalid one-time-password!' })
+            }
+
+        } catch (error) {
+            console.error({ success: false, message: `Error in email function: ${error}` })
+        }
+
     },
     CreateUserCheckEmptyFields: async (req, res, next) => {
         try {
             next()
         } catch (error) {
-            res.status(400).json({ error: `CreateUserCheckEmptyFields in user middleware error ${error}` });
+            res.json({ error: `CreateUserCheckEmptyFields in user middleware error ${error}` });
+        }
+    },
+    CreateUserCheckAdminIfDoesNotExist: async (req, res, next) => {
+        try {
+            const { email, password, mobileno, name } = req.body
+
+            const testAdmin = await UserModel.find({ role: 'admin' })
+
+            if (testAdmin.length > 0) {
+                const testEmail = await UserModel.find({ email: email })
+                const testMobileNo = await UserModel.find({ mobileno: mobileno })
+                if (testEmail.length > 0) return res.json({ success: false, message: 'Email already exists!' })
+                if (testMobileNo.length > 0) return res.json({ success: false, message: 'Mobile number already exists!' })
+                next()
+            } else {
+                await UserModel.create({ email, mobileno, isactive: true, name, password, role: 'admin' })
+                res.json({ success: false, message: 'No admin existing, user turned to admin!' })
+            }
+
+        } catch (error) {
+            res.json({ error: `CreateUserCheckUserIfExists in user middleware error ${error}` });
         }
     },
     CreateUserCheckUserIfExists: async (req, res, next) => {
@@ -93,7 +174,7 @@ const UserMidlleware = {
             if (testMobileNo.length > 0) return res.json({ success: false, message: 'Mobile number already exists!' })
             next()
         } catch (error) {
-            res.status(400).json({ error: `CreateUserCheckUserIfExists in user middleware error ${error}` });
+            res.json({ error: `CreateUserCheckUserIfExists in user middleware error ${error}` });
         }
     },
     CreateUserHashedPassword: async (req, res, next) => {
@@ -103,14 +184,14 @@ const UserMidlleware = {
             values.password = hash
             next()
         } catch (error) {
-            res.status(400).json({ error: `CreateUserHashedPassword in user middleware error ${error}` });
+            res.json({ error: `CreateUserHashedPassword in user middleware error ${error}` });
         }
     },
     UpdateUserCheckEmptyFields: async (req, res, next) => {
         try {
             next()
         } catch (error) {
-            res.status(400).json({ error: `UpdateUserCheckEmptyFields in user middleware error ${error}` });
+            res.json({ error: `UpdateUserCheckEmptyFields in user middleware error ${error}` });
         }
     },
 }

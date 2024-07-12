@@ -1,17 +1,19 @@
 const TransactionModel = require('../models/Transactions.model')
 const AccountModel = require('../models/Account.model')
-const UserModel = require('../models/Users.model')
+const AuditLog = require('../models/Auditlog.model')
+const fetch = require('node-fetch')
+
+const Log = async ({ userId, action, collectionName, documentId, changes, description }) => {
+    await AuditLog.create({ userId, action, collectionName, documentId, changes, description })
+}
 
 const TransactionController = {
     DepositTransaction: async (req, res) => {
         try {
             const userIdHeader = req.headers['userid']
-            console.log(userIdHeader)
 
             const { account, amount } = req.body
             const depositAmount = parseFloat(amount)
-
-            console.log('Deposit Transaction Controller: ', { account, amount })
 
             const { _id: accountId } = await AccountModel.findOne({ accountno: account })
 
@@ -19,8 +21,17 @@ const TransactionController = {
 
             const currentBalance = balance + depositAmount
 
-            await TransactionModel.create({ account: accountId, amount: depositAmount, transactionType: 'deposit', balance: currentBalance, token: `UnionBank userid : ${userIdHeader}`  })
+            const { _id: creditTransactionId } = await TransactionModel.create({ account: accountId, fee: 0, amount: depositAmount, transactionType: 'deposit', balance: currentBalance, token: `UnionBank userid : ${userIdHeader}`, description: 'Deposited from UnionBank' })
             await AccountModel.findByIdAndUpdate(accountId, { balance: currentBalance }, { new: true })
+
+            Log({
+                userId: userIdHeader,
+                action: 'create',
+                collectionName: 'Transaction',
+                documentId: creditTransactionId,
+                changes: { balance: currentBalance },
+                description: `${account} attempted a deposit with an amount of ${amount} with a service fee of 0. The balance changed from ${balance} to ${currentBalance}.`
+            })
 
             res.json({ success: true, message: 'Deposit transaction successfully!' })
         } catch (error) {
@@ -35,8 +46,6 @@ const TransactionController = {
             const withdrawAmount = parseFloat(amount)
             const tax = 150
 
-            console.log('Withdrawal Transaction Controller: ', { account, amount })
-
             const { _id: accountId } = await AccountModel.findOne({ accountno: account })
             const { balance } = await AccountModel.findById(accountId)
 
@@ -46,9 +55,17 @@ const TransactionController = {
 
             const currentBalance = balance - taxAmount
 
-            await TransactionModel.create({ account: accountId, amount: taxAmount, transactionType: 'withdrawal', balance: currentBalance, token: `UnionBank userid : ${userIdHeader}`  })
-
+            const { _id: debitTransactionId } = await TransactionModel.create({ account: accountId, fee: tax, amount: withdrawAmount, transactionType: 'withdrawal', balance: currentBalance, token: `UnionBank userid : ${userIdHeader}`, description: 'Withdrawed from UnionBank' })
             await AccountModel.findByIdAndUpdate(accountId, { balance: currentBalance }, { new: true })
+
+            Log({
+                userId: userIdHeader,
+                action: 'create',
+                collectionName: 'Transaction',
+                documentId: debitTransactionId,
+                changes: { balance: currentBalance },
+                description: `${account} attempted a withdrawal with an amount of ${amount} with a service fee of ${tax}, totaling ${taxAmount}. The balance changed from ${balance} to ${currentBalance}.`
+            })
 
             res.json({ success: true, message: 'Withdrawal transaction successfully!' })
         } catch (error) {
@@ -63,8 +80,6 @@ const TransactionController = {
             const transferAmount = parseFloat(amount)
             const tax = 150
 
-            console.log('Transfer Transaction Controller: ', { debitAccount, creditAccount, amount })
-
             const { _id: debitAccountId } = await AccountModel.findOne({ accountno: debitAccount })
             const { _id: creditAccountId } = await AccountModel.findOne({ accountno: creditAccount })
 
@@ -77,11 +92,29 @@ const TransactionController = {
             const debitFutureBalance = debitBalance - taxAmount
             const creditFutureBalance = creditBalance + transferAmount
 
-            await TransactionModel.create({ account: debitAccountId, amount: taxAmount, transactionType: 'transfer_debit', description: `${debitAccount} transferred to ${creditAccount}`, status: 'completed', balance: debitFutureBalance, token: `UnionBank userid : ${userIdHeader}` })
-            await TransactionModel.create({ account: creditAccountId, amount: transferAmount, transactionType: 'transfer_credit', description: `Received from ${debitAccount}`, status: 'completed', balance: creditFutureBalance, token: `UnionBank userid : ${userIdHeader}`  })
+            const { _id: debitTransactionId } = await TransactionModel.create({ account: debitAccountId, fee: tax, amount: transferAmount, transactionType: 'transfer_debit', description: `Transferred to ${creditAccount}`, status: 'completed', balance: debitFutureBalance, token: `Retail Banking : ${userIdHeader}` })
+            const { _id: creditTransactionId } = await TransactionModel.create({ account: creditAccountId, fee: tax, amount: transferAmount, transactionType: 'transfer_credit', description: `Received from ${debitAccount}`, status: 'completed', balance: creditFutureBalance, token: `Retail Banking : ${userIdHeader}` })
 
             await AccountModel.findByIdAndUpdate(debitAccountId, { balance: debitFutureBalance }, { new: true })
             await AccountModel.findByIdAndUpdate(creditAccountId, { balance: creditFutureBalance }, { new: true })
+
+            Log({
+                userId: userIdHeader,
+                action: 'create',
+                collectionName: 'Transaction',
+                documentId: debitTransactionId,
+                changes: { balance: debitFutureBalance },
+                description: `${debitAccount} transferred an amount of ${transferAmount} with a service fee of ${tax}, totaling ${taxAmount}. The balance changed from ${debitBalance} to ${debitFutureBalance}.`
+            })
+
+            Log({
+                userId: userIdHeader,
+                action: 'update',
+                collectionName: 'Transaction',
+                documentId: creditTransactionId,
+                changes: { balance: creditFutureBalance },
+                description: `${creditAccount} credited an amount of ${transferAmount} The balance changed from ${creditBalance} to ${creditFutureBalance}`
+            })
 
             res.json({ success: true, message: 'Transfer transaction successfully!' })
         } catch (error) {
@@ -110,7 +143,7 @@ const TransactionController = {
             const data = await TransactionModel.find({ account: accountId })
 
             const formattedData = data.map(transaction => {
-                const { createdAt, _id, amount, description, transactionType, balance } = transaction;
+                const { createdAt, _id, amount, description, transactionType, balance, fee } = transaction;
 
                 // Format date including time
                 const formattedCreatedAt = new Date(createdAt).toLocaleString('en-US', {
@@ -121,7 +154,7 @@ const TransactionController = {
                     minute: '2-digit'
                 });
 
-                return { _id, amount, description, createdAt: formattedCreatedAt, transactionType, balance };
+                return { _id, amount, description, createdAt: formattedCreatedAt, transactionType, balance, fee };
             });
 
             res.json({ success: true, message: 'Fetch transactions successfully!', data: formattedData })
@@ -131,14 +164,20 @@ const TransactionController = {
     },
     SearchTransaction: async (req, res) => {
         try {
-            const { accountId } = req.params
-            console.log('Search Transaction Controller: ', accountId)
+            const { searchId } = req.params
 
-            const { _id: account } = await AccountModel.findOne({ user: accountId })
-            const data = await TransactionModel.find({ account: account })
-            res.json({ success: true, message: 'Search transactions successfully!', data })
+            const { createdAt, _id, amount, description, transactionType, balance, fee } = await TransactionModel.findById(searchId)
+            const formattedCreatedAt = new Date(createdAt).toLocaleString('en-US', {
+                month: '2-digit',
+                day: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            res.json({ success: true, message: 'Fethced certain account successfully!', data: [{ _id, amount, description, createdAt: formattedCreatedAt, transactionType, balance, fee }] })
         } catch (error) {
-            res.json({ error: `SearchTransaction in transaction controller error ${error}` });
+            res.json({ error: `SearchTransactions in transaction controller error ${error}` });
         }
     }
 }

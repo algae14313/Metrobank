@@ -11,17 +11,38 @@ router.post('/loginuser',
     UserMiddleware.LoginUserCheckPassword
 )
 
+router.post('/verify',
+    UserMiddleware.CheckDeveloperTokenValid,
+    UserMiddleware.EmailVerification
+)
+
 router.post('/createuser',
     UserMiddleware.CheckDeveloperTokenValid,
     UserMiddleware.CreateUserCheckEmptyFields,
     UserMiddleware.CreateUserCheckUserIfExists,
     UserMiddleware.CreateUserHashedPassword,
+    UserMiddleware.CreateUserCheckAdminIfDoesNotExist,
     UserController.CreateUser
 )
 
 router.get('/users',
     UserMiddleware.CheckDeveloperTokenValid,
     UserController.GetAllUsers
+)
+
+router.get('/developerusers',
+    UserMiddleware.CheckDeveloperTokenValid,
+    UserController.GetAllDeveloperUsers
+)
+
+router.get('/employedusers',
+    UserMiddleware.CheckDeveloperTokenValid,
+    UserController.GetAllEmployedUsers
+)
+
+router.get('/users/:userId',
+    UserMiddleware.CheckDeveloperTokenValid,
+    UserController.GetCurrentUser
 )
 
 router.get('/rbusers',
@@ -34,18 +55,33 @@ router.get('/rbaccounts',
     UserController.GetAllRBAccounts
 )
 
-router.get('/users/:name', //temp
+router.get('/searchrdeveloperusers/:searchId',
     UserMiddleware.CheckDeveloperTokenValid,
-    UserController.SearchUser
+    UserController.SearchDeveloperUsers
 )
 
-router.post('/updateuser/:userId', //temp
-    UserMiddleware.CheckUserTokenValid,
+router.get('/searchremployedusers/:searchId',
+    UserMiddleware.CheckDeveloperTokenValid,
+    UserController.SearchEmployedUsers
+)
+
+router.get('/searchrbusers/:searchId',
+    UserMiddleware.CheckDeveloperTokenValid,
+    UserController.SearchRBUser
+)
+
+router.get('/searchrbaccounts/:searchId',
+    UserMiddleware.CheckDeveloperTokenValid,
+    UserController.SearchRBAccounts
+)
+
+router.post('/updateuser/:userId',
+    UserMiddleware.CheckDeveloperTokenValid,
     UserMiddleware.UpdateUserCheckEmptyFields,
     UserController.UpdateUser
 )
 
-router.post('/updateactiveuser/:userId', //temp
+router.post('/updateactiveuser/:userId',
     UserMiddleware.CheckDeveloperTokenValid,
     UserController.UpdateActiveUser
 )

@@ -22,7 +22,7 @@ router.get('/useraccount/:uid',
     AccountController.GetUserAccount
 )
 
-router.get('/accounts/:userId', //temp
+router.get('/accounts/:searchId',
     AccountMiddleware.CheckDeveloperTokenValid,
     AccountController.SearchAccount
 )
@@ -33,7 +33,7 @@ router.post('/updateaccount/:accountId', //temp
     AccountController.UpdateAccount
 )
 
-router.post('/updateactiveaccount/:accountId', //temp
+router.post('/updateactiveaccount/:accountId',
     AccountMiddleware.CheckDeveloperTokenValid,
     AccountController.UpdateActiveAccount
 )

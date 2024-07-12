@@ -1,7 +1,5 @@
-const TransactionModel = require('../models/Transactions.model')
-const DeveloperModel = require('../models/Developer.model')
-const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const AccountModel = require('../models/Account.model')
 require('dotenv').config()
 
 const TransactionMidlleware = {
@@ -38,6 +36,17 @@ const TransactionMidlleware = {
     CreateTransactionCheckEmptyFields: async (req, res, next) => {
         try {
             next()
+        } catch (error) {
+            res.status(400).json({ error: `CreateTransactionCheckEmptyFields in transaction middleware error ${error}` });
+        }
+    },
+    CheckAccountIfExist: async (req, res, next) => {
+        try {
+            const { debitAccount, creditAccount, amount } = req.body
+            const debit = await AccountModel.findOne({ accountno: debitAccount })
+            const credit = await AccountModel.findOne({ accountno: creditAccount })
+            if (debit && credit) return next()
+            res.json({ success: false, message: 'Account does not exist!' })
         } catch (error) {
             res.status(400).json({ error: `CreateTransactionCheckEmptyFields in transaction middleware error ${error}` });
         }
