@@ -10,7 +10,7 @@ export default function Home() {
             {/* <div className="w-full h-full p-[5rem]">
                 <img src={test} alt="asd" className='w-full h-full object-cover' />
             </div> */}
-            <div className="w-full h-full flex justify-center items-center gap-[7rem]">
+            {/* <div className="w-full h-full flex justify-center items-center gap-[7rem]">
                 <div className="flex flex-col items-center gap-[1rem]">
                     <h1 className='text-[2rem] font-bold'>Department</h1>
                     <h1>ADMIN</h1>
@@ -43,7 +43,7 @@ export default function Home() {
                 <h1 className='text-[2rem] font-bold px-[3rem]' >
                     ANO DAW ANO DAW ANO DAW ANO DAW ANO DAW 
                 </h1>
-            </marquee>
+            </marquee> */}
         </div>
     )
 }
