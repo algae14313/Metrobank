@@ -11,7 +11,7 @@ const UserController = {
     CreateUser: async (req, res) => {
         try {
             const { name, email, mobileno, password, role, rbid } = req.body
-
+            
             const data = await UserModel.create({ name, email, mobileno, password, role })
 
             if (rbid !== undefined) {
@@ -53,7 +53,7 @@ const UserController = {
     },
     GetAllEmployedUsers: async (req, res) => {
         try {
-            const data = await UserModel.find({ role: { $nin: ['user', 'developer', 'admin'] } });
+            const data = await UserModel.find({ role: { $nin: ['user', 'developer'] } });
             res.json({ success: true, message: 'Fetch employed users successfully!', data })
         } catch (error) {
             res.json({ error: `GetAllEmployedUsers in user controller error ${error}` });
@@ -288,7 +288,7 @@ const UserController = {
                 description: description
             });
 
-            res.json({ success: true, message: 'User updated successfully!', data })
+            res.json({ success: true, message: 'User updated successfully', data })
         } catch (error) {
             res.json({ error: `UpdateUser in user controller error ${error}` });
         }

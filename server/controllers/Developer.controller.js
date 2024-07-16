@@ -2,6 +2,7 @@ const DeveloperModel = require('../models/Developer.model')
 const TransactionModel = require('../models/Transactions.model')
 const AccountModel = require('../models/Account.model')
 const AuditLog = require('../models/Auditlog.model')
+const jwt = require('jsonwebtoken')
 
 const { exec } = require('child_process')
 
@@ -71,6 +72,36 @@ const DeveloperController = {
             const { balance: debitBalance } = await AccountModel.findById(debitAccountId)
             const { balance: creditBalance } = await AccountModel.findById(creditAccountId)
 
+            if (debitAccount === creditAccount) {
+                const taxAmount = 0
+
+                if (taxAmount > debitBalance) return res.json({ success: false, message: 'Insufficient Balance!', servicefee: tax, transferAmount: transferAmount, total: taxAmount })
+
+                const debitFutureBalance = debitBalance - taxAmount
+                const { _id: debitTransactionId } = await TransactionModel.create({ account: debitAccountId, fee: tax, amount: taxAmount, transactionType: 'transfer_debit', description: `${debitAccount} transferred to ${creditAccount}`, status: 'completed', balance: debitFutureBalance, token: token })
+                const { _id: creditTransactionId } = await TransactionModel.create({ account: creditAccountId, fee: tax, amount: transferAmount, transactionType: 'transfer_credit', description: `Received from ${debitAccount}`, status: 'completed', balance: debitFutureBalance, token: token })
+                await AccountModel.findByIdAndUpdate(debitAccountId, { balance: debitFutureBalance }, { new: true })
+
+                Log({
+                    userId: developerUserId,
+                    action: 'create',
+                    collectionName: 'Transaction',
+                    documentId: debitTransactionId,
+                    changes: { balance: debitFutureBalance },
+                    description: `Foreign user: ${developerUserId} with developer document id of ${developerId} attempted to transfer. ${debitAccount} transferred an amount of ${transferAmount} with a service fee of ${tax}, totaling ${taxAmount}. The balance changed from ${debitBalance} to ${debitFutureBalance}.`
+                })
+
+                Log({
+                    userId: developerUserId,
+                    action: 'update',
+                    collectionName: 'Transaction',
+                    documentId: creditTransactionId,
+                    changes: { balance: debitFutureBalance },
+                    description: `Foreign user: ${developerUserId} with developer document id of ${developerId} attempted to transfer. ${creditAccount} credited an amount of ${transferAmount} The balance changed from ${creditBalance} to ${debitFutureBalance}`
+                })
+                return res.json({ success: true, message: 'Transfer transaction successfully!', reference: debitTransactionId  })
+            }
+
             const taxAmount = transferAmount + tax
             if (taxAmount > debitBalance) return res.json({ success: false, message: 'Insufficient Balance!', servicefee: tax, transferAmount: transferAmount, total: taxAmount })
 
@@ -106,6 +137,43 @@ const DeveloperController = {
             res.json({ error: `TransferTransaction in transaction controller error ${error}` });
         }
     },
+    GenerateUrl: async (req, res) => {
+        try {
+            const { accountno } = req.params
+            const token = jwt.sign({ user: accountno }, process.env.ADMIN_TOKEN, { expiresIn: '1h' });
+            const url = `${process.env.CLIENT_ADDRESS}/unionbank/myaccount?token=${token}`;
+            res.json({ url });
+        } catch (error) {
+            res.json({ error: `GetAllTransaction in developer controller error ${error}` });
+        }
+    },
+    GetAllUserTransaction: async (req, res) => {
+        try {
+            const { user } = req.user
+
+            const { _id: accountId, accountno: accountno } = await AccountModel.findOne({ accountno: user })
+            const data = await TransactionModel.find({ account: accountId })
+
+            const formattedData = data.map(transaction => {
+                const { createdAt, _id, amount, description, transactionType, balance, fee } = transaction;
+
+                // Format date including time
+                const formattedCreatedAt = new Date(createdAt).toLocaleString('en-US', {
+                    month: '2-digit',
+                    day: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                return { _id, amount, description, createdAt: formattedCreatedAt, transactionType, balance, fee };
+            });
+
+            res.json({ success: true, message: 'Fetch transactions successfully!', data: formattedData, accountno })
+        } catch (error) {
+            res.json({ error: `GetAllTransaction in transaction controller error ${error}` });
+        }
+    },
     GetAllAuditLog: async (req, res) => {
         try {
             const data = await AuditLog.find()
@@ -127,6 +195,34 @@ const DeveloperController = {
             res.json({ success: true, message: 'Auditlog fetched successfully!', data: formattedData })
         } catch (error) {
             res.json({ error: `DeleteToken in developer controller error ${error}` });
+        }
+    },
+    SearchAuditLog: async (req, res) => {
+        try {
+            const { searchId } = req.params
+
+            const response = await fetch(`${process.env.REQUEST}/api/it/auditlog`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${process.env.ADMIN_TOKEN}`
+                }
+            })
+
+            if (!response.ok) return res.json({ success: false, message: 'API Request error from search account controller!' })
+
+            const audit = await response.json()
+            const regex = new RegExp(searchId, 'i');
+
+            // if (!searchId) { return res.json({ success: true, message: 'Fetched search account successfully!', data: accounts }) }
+
+            const filteredData = audit?.data?.filter((item) => {
+                const { userId } = item;
+                return regex.test(userId)
+            })
+
+            res.json({ success: true, message: 'Auditlog fetched successfully!', data: filteredData })
+        } catch (error) {
+            res.json({ error: `SearchAuditLog in account controller error ${error}` });
         }
     },
     DeleteToken: async (req, res) => {

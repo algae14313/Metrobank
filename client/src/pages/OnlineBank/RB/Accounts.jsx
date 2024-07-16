@@ -1,62 +1,73 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from '../../../components/Sidebar'
 import Header__Dashboard from '../../../components/Header__dashboard'
 import DataGrids from '../../../components/DataGrids'
-import { Button } from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search';
-import axios from 'axios'
-const { VITE_HOST, VITE_ADMIN_TOKEN } = import.meta.env
+import { useQuery } from '@tanstack/react-query'
+import { fetchCredentials } from '@/api/Credentials'
+import { fetchRBAccounts, SearchRbAccounts } from '@/api/Accounts'
+import { Button } from '@/components/ui/button'
+import '../css/Accounts.css'
 
 export default function Accounts() {
-    const [values, setValues] = useState([])
+    const [search, setSearch] = useState('')
     const navigate = useNavigate()
 
-    useEffect(() => {
-        fetchCredentials();
-        fetchRBAccounts()
-    }, []);
+    const { data: credentials, isLoading: credentialsLoading } = useQuery({
+        queryFn: () => fetchCredentials(),
+        queryKey: ['accountsCredentials']
+    })
 
-    const fetchCredentials = async () => {
-        try {
-            const credentials = sessionStorage.getItem('credentials')
-            if (!credentials) return navigate('/metrobank')
-        } catch (error) {
-            console.error(error)
-        }
-    }
+    const { data: rbaccounts } = useQuery({
+        queryFn: () => fetchRBAccounts(),
+        queryKey: ['accountsRbAccounts']
+    })
 
-    const fetchRBAccounts = async () => {
-        try {
-            const res = await axios.get(`${VITE_HOST}/api/rbaccounts`, {
-                headers: {
-                    Authorization: `Bearer ${VITE_ADMIN_TOKEN}`
-                }
-            })
-            const accounts = res?.data?.data
-            const formattedData = accounts.map((acc, index) => ({
-                id: index + 1,
-                uid: acc?.user?._id,
-                accountno: acc?.accountno,
-                name: acc?.user?.name,
-                balance: acc?.balance
-            }))
-            setValues(formattedData)
-        } catch (error) {
-            console.error(error)
-        }
+    const { data: searchrbaccounts } = useQuery({
+        queryFn: () => SearchRbAccounts(search),
+        queryKey: ['searchRbAccounts', search],
+        enabled: !!search
+    })
+
+    const handleOnChangeSearch = (e) => {
+        const { value } = e.target
+        setSearch(value)
     }
 
     const handleViewAccount = (e) => {
         navigate(`/ledger/${e}`)
     }
 
+    const handleDeposit = (e) => {
+        navigate(`/ledger/deposit/${e}`)
+    }
+
+    const handleWithdraw = (e) => {
+        navigate(`/ledger/withdrawal/${e}`)
+    }
+
+    useEffect(() => {
+        if (!credentials && !credentialsLoading) { navigate('/metrobank') }
+    }, [credentials, navigate]);
+
     const renderViewCell = (params) => {
         return (
-            <div className="w-full h-full flex justify-center items-center">
-                <Button onClick={() => handleViewAccount(params?.row?.uid)} className="flex justify-center items-center hover:scale-[.98] duration-300 ease">
-                    <h1>View Statement</h1>
-                </Button>
+            <div className="w-full h-full flex justify-evenly items-center">
+                <div>
+                    <Button variant='secondary' onClick={() => handleViewAccount(params?.row?.uid)} className="flex justify-center items-center hover:scale-[.98] duration-300 ease">
+                        <h1>View Statement</h1>
+                    </Button>
+                </div>
+
+                <div className='flex flex-col gap-[.5rem]'>
+                    <Button variant='secondary' onClick={() => handleDeposit(params?.row?.uid)} className="flex justify-center items-center hover:scale-[.98] duration-300 ease">
+                        <h1>Deposit</h1>
+                    </Button>
+                    <Button variant='secondary' onClick={() => handleWithdraw(params?.row?.uid)} className="flex justify-center items-center hover:scale-[.98] duration-300 ease">
+                        <h1>Withdraw</h1>
+                    </Button>
+                </div>
+
             </div>
 
         );
@@ -88,7 +99,7 @@ export default function Accounts() {
         {
             field: 'actions',
             headerName: 'Actions',
-            width: 250,
+            width: 450,
             headerAlign: 'center',
             align: 'center',
             renderCell: renderViewCell
@@ -97,31 +108,32 @@ export default function Accounts() {
 
     return (
         <>
-            <div className="flex">
+            <div className="flex bg-white dark:bg-[#242526]">
                 <Sidebar />
                 <div className="w-[80%] h-screen flex flex-col justify-start items-start p-[1rem] overflow-auto">
-                    <Header__Dashboard title={`View Accounts`} />
+                    <Header__Dashboard breadcrumbs={breadCrumbs} />
                     <div className="w-full h-[95%] flex flex-col justify-start items-start gap-[1rem]">
                         <div className="w-full h-[5%]">
-                            <h1 className='text-black font-[600] text-[1.2rem]'>
+                            <h1 className='text-black dark:text-white font-[600] text-[1.2rem]'>
                                 Account Holders
                             </h1>
                         </div>
                         <div className="w-full h-[5%] flex justify-start items-center gap-[1rem]">
-                            <h1>
+                            <h1 className='text-black dark:text-white'>
                                 Search
                             </h1>
                             <input
+                                onChange={handleOnChangeSearch}
                                 type="text"
-                                className="block w-[20rem] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                className="block w-[20rem] rounded-md border-0 px-[.7rem] py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                                 placeholder='Search here...'
                             />
-                            <Button>
+                            {/* <Button>
                                 <SearchIcon />
-                            </Button>
+                            </Button> */}
                         </div>
                         <div className="w-full h-[80%]">
-                            <DataGrids columnsTest={UserColumns} rowsTest={values} descCol={`id`} colVisibility={{ id: false }} />
+                            <DataGrids columnsTest={UserColumns} rowsTest={search === '' ? rbaccounts || [] : searchrbaccounts || []} descCol={`id`} colVisibility={{ id: false }} />
                         </div>
                     </div>
                 </div>
@@ -129,3 +141,8 @@ export default function Accounts() {
         </>
     )
 }
+
+const breadCrumbs = [
+    // { title: 'Home', href: '/', isLink: true },
+    { title: 'View Accounts', isLink: false },
+]

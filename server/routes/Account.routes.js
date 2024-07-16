@@ -19,6 +19,7 @@ router.get('/accounts',
 
 router.get('/useraccount/:uid',
     AccountMiddleware.CheckDeveloperTokenValid,
+    AccountMiddleware.CheckAccountIfExists,
     AccountController.GetUserAccount
 )
 

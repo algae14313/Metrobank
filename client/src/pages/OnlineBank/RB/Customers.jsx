@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Sidebar from '../../../components/Sidebar'
 import Header__Dashboard from '../../../components/Header__dashboard';
 import DataGrids from '../../../components/DataGrids';
@@ -7,88 +7,104 @@ import Toggle from '../../../components/Toggle';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
-import { Button } from '@mui/material'
+import TabPanel from '@mui/lab/TabPanel'
 import axios from 'axios'
+import { useQuery } from '@tanstack/react-query';
+import { fetchCredentials } from '@/api/Credentials';
+import { fetchRBUsers, SearchRBUsers } from '@/api/User';
+import { CustomerfetchRBAccounts, CustomersSearchRBAccounts } from '@/api/Accounts';
+import { Button } from '@/components/ui/button';
 
 const { VITE_HOST, VITE_ADMIN_TOKEN } = import.meta.env
 
 export default function Customers() {
     const [value, setValue] = useState('1');
+    const [searchIdRbUser, setSearchIdRbUser] = useState('')
+    const [searchIdRbAccounts, setSearchIdRbAccounts] = useState('')
     const [details, setDetails] = useState([])
     const [accounts, setAccounts] = useState([])
     const navigate = useNavigate()
 
+    const { data: credentials, isLoading: credentialsLoading } = useQuery({
+        queryFn: () => fetchCredentials(),
+        queryKey: ['credentialsCustomers']
+    })
+
+    const { data: rbusers, isLoading: rbusersLoading, refetch: refetchRbUsers } = useQuery({
+        queryFn: () => fetchRBUsers(),
+        queryKey: ['rbusers']
+    })
+
+    const { data: searchrbusers, isLoading: searchrbusersLoading } = useQuery({
+        queryFn: () => SearchRBUsers(searchIdRbUser),
+        queryKey: ['searchRBUsers', searchIdRbUser],
+        enabled: !!searchIdRbUser,
+        staleTime: searchIdRbUser ? Infinity : 0
+    })
+
+
+
+    const { data: rbaccounts, isLoading: rbaccountsLoading, refetch: refetchRbAccounts } = useQuery({
+        queryFn: () => CustomerfetchRBAccounts(),
+        queryKey: ['customerFetchRbAccounts']
+    })
+
+    const { data: searchrbaccounts, isLoading: searchrbaccountsLoading } = useQuery({
+        queryFn: () => CustomersSearchRBAccounts(searchIdRbAccounts),
+        queryKey: ['CustomerSearchRBAccounts', searchIdRbAccounts],
+        enabled: !!searchIdRbAccounts,
+        staleTime: searchIdRbAccounts ? Infinity : 0
+    })
+
     useEffect(() => {
-        fetchCredentials()
-        fetchRBUsers()
-        fethcRBAccounts()
-    }, [])
+        if (!credentialsLoading && !credentials) { navigate('/metrobank') }
+        if (value === '1') {
+            refetchRbUsers();
+        } else {
+            refetchRbAccounts();
+        }
+    }, [credentials, value, navigate])
 
-    const fetchCredentials = async () => {
+    const handleOnChangeRBUsers = (e) => {
         try {
-            const credentials = sessionStorage.getItem('credentials')
-            if (!credentials) return navigate('/metrobank')
-
+            const { value } = e.target
+            setSearchIdRbUser(value)
+            if (value === '') { refetchRbUsers() }
         } catch (error) {
             console.error(error)
         }
     }
 
-    const fetchRBUsers = async () => {
+    const handleOnChangeRBAccounts = (e) => {
         try {
-            const res = await axios.get(`${VITE_HOST}/api/rbusers`, {
-                headers: {
-                    Authorization: `Bearer ${VITE_ADMIN_TOKEN}`
-                }
-            })
-
-            const users = res?.data?.data
-            const formattedData = users.map((user, index) => ({
-                id: index + 1,
-                uid: user?._id,
-                name: user?.name,
-                email: user?.email,
-                mobileno: user?.mobileno,
-                isactive: user?.isactive,
-                accountactive: user?.isactive
-            }))
-            setDetails(formattedData)
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
-    const fethcRBAccounts = async () => {
-        try {
-            const res = await axios.get(`${VITE_HOST}/api/rbaccounts`, {
-                headers: {
-                    Authorization: `Bearer ${VITE_ADMIN_TOKEN}`
-                }
-            })
-            const accounts = res?.data?.data
-            const formattedData = accounts.map((acc, index) => ({
-                id: index + 1,
-                accountno: acc?.accountno,
-                name: acc?.user?.name,
-                email: acc?.user?.email,
-                mobileno: acc?.user?.mobileno,
-                accountactive: acc?.user?.isactive
-            }))
-            setAccounts(formattedData)
+            const { value } = e.target
+            setSearchIdRbAccounts(value)
+            if (value === '') { refetchRbAccounts() }
         } catch (error) {
             console.error(error)
         }
     }
 
     const handleChange = (event, newValue) => {
-        setValue(newValue);
+        try {
+            setValue(newValue);
+            if (newValue === '1') {
+                refetchRbUsers();
+                setSearchIdRbUser('');
+            } else {
+                refetchRbAccounts();
+                setSearchIdRbAccounts('');
+            }
+        } catch (error) {
+            console.error(error)
+        }
     }
-
 
     const handleOpenAccount = async (name) => {
         try {
-            const res = await axios.post(`${VITE_HOST}/api/createaccount`, { userId: name, accountType: 'savings' }, {
+            const credentials = sessionStorage.getItem('credentials')
+            const { userId: rbid } = JSON.parse(credentials)
+            const res = await axios.post(`${VITE_HOST}/api/createaccount`, { userId: name, accountType: 'savings', rbid: rbid }, {
                 headers: {
                     Authorization: `Bearer ${VITE_ADMIN_TOKEN}`
                 }
@@ -98,47 +114,79 @@ export default function Customers() {
             alert(res?.data?.message)
         } catch (error) {
             console.error(error)
-        } finally {
-            fetchRBUsers()
-            fethcRBAccounts()
         }
     }
 
-    const handleUpdateActiveCustomer = async (e, id) => {
-        try {
-            await axios.post(`${VITE_HOST}/api/updateactiveuser/${id}`, { isactive: e }, {
-                headers: {
-                    Authorization: `Bearer ${VITE_ADMIN_TOKEN}`
-                }
-            })
-        } catch (error) {
-            console.error(error)
-        }
+    const renderIsActiveRBUsersToggle = (params) => {
+        const [isActive, setIsActive] = useState(params.row.isactive);
+
+        const handleUpdateActiveUsers = async (e) => {
+            setIsActive(e);
+            try {
+                const credentials = sessionStorage.getItem('credentials')
+                const { userId } = JSON.parse(credentials)
+                await axios.post(`${VITE_HOST}/api/updateactiveuser/${params.row.uid}`,
+                    {
+                        isactive: e,
+                        rbid: userId
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${VITE_ADMIN_TOKEN}`,
+                        }
+                    });
+            } catch (error) {
+                console.error('Error updating active status:', error);
+            }
+        };
+        return (
+            <div className="w-full h-full flex justify-center items-start">
+                <Toggle
+                    isCheck={isActive}
+                    returnCheck={handleUpdateActiveUsers}
+                />
+            </div>
+
+        )
     }
 
-    const renderIsActiveToggle = (params) => {
+    const renderIsActiveRBAccountsToggle = (params) => {
+        const [isActiveAcc, setIsActiveAcc] = useState(params.row.accountactive);
+
+        const handleUpdateActiveAccounts = async (e) => {
+            setIsActiveAcc(e);
+            try {
+                const credentials = sessionStorage.getItem('credentials')
+                const { userId } = JSON.parse(credentials)
+                await axios.post(`${VITE_HOST}/api/updateactiveaccount/${params.row.uid}`,
+                    {
+                        isactive: e,
+                        rbid: userId
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${VITE_ADMIN_TOKEN}`,
+                        }
+                    });
+            } catch (error) {
+                console.error('Error updating active status:', error);
+            }
+        };
         return (
-            <div className="w-full h-full flex justify-center items-center">
-                <Toggle isCheck={params.row.isactive} returnCheck={(checkState) => handleUpdateActiveCustomer(checkState, params.row.uid)} />
+            <div className="w-full h-full flex justify-center items-start">
+                <Toggle
+                    isCheck={isActiveAcc}
+                    returnCheck={handleUpdateActiveAccounts}
+                />
             </div>
 
-        );
-    };
-
-    const renderIsAccountActiveToggle = (params) => {
-        return (
-            <div className="w-full h-full flex justify-center items-center">
-                <Toggle isCheck={params.row.accountactive} />
-            </div>
-
-        );
-    };
-
+        )
+    }
 
     const renderActionButtons = (params) => {
         return (
             <div className="w-full h-full flex justify-center items-center">
-                <Button onClick={() => handleOpenAccount(params?.row?.uid)} className="flex justify-center items-center hover:scale-[.98] duration-300 ease">
+                <Button variant='secondary' onClick={() => handleOpenAccount(params?.row?.uid)} className="flex justify-center items-center hover:scale-[.98] duration-300 ease">
                     <h1>Open Account</h1>
                 </Button>
             </div>
@@ -156,7 +204,7 @@ export default function Customers() {
         {
             field: 'name',
             headerName: 'Full Name',
-            width: 300,
+            width: 250,
             headerAlign: 'center',
             align: 'center'
         },
@@ -164,24 +212,24 @@ export default function Customers() {
             field: 'email',
             headerName: 'Email',
             type: 'number',
-            width: 250,
+            width: 200,
             headerAlign: 'center',
             align: 'center'
         },
         {
             field: 'mobileno',
             headerName: 'Mobile No.',
-            width: 250,
+            width: 200,
             headerAlign: 'center',
             align: 'center'
         },
         {
             field: 'isactive',
             headerName: 'Active',
-            width: 200,
+            width: 150,
             headerAlign: 'center',
             align: 'center',
-            renderCell: renderIsActiveToggle
+            renderCell: renderIsActiveRBUsersToggle
         },
         {
             field: 'actions',
@@ -211,7 +259,7 @@ export default function Customers() {
         {
             field: 'name',
             headerName: 'Full Name',
-            width: 300,
+            width: 200,
             headerAlign: 'center',
             align: 'center'
         },
@@ -219,35 +267,35 @@ export default function Customers() {
             field: 'email',
             headerName: 'Email',
             type: 'number',
-            width: 250,
+            width: 200,
             headerAlign: 'center',
             align: 'center'
         },
         {
             field: 'mobileno',
             headerName: 'Mobile No.',
-            width: 250,
+            width: 200,
             headerAlign: 'center',
             align: 'center'
         },
         {
             field: 'isactive',
             headerName: 'Active',
-            width: 200,
+            width: 150,
             headerAlign: 'center',
             align: 'center',
-            renderCell: renderIsActiveToggle
+            renderCell: renderIsActiveRBAccountsToggle
         }
     ]
 
     return (
         <>
-            <div className="flex">
+            <div className="flex bg-white dark:bg-[#242526]">
                 <Sidebar />
                 <div className="w-[100%] sm:w-[100%] md:w-[100%] lg:w-[80%] h-screen flex flex-col justify-start items-start p-[1rem] overflow-hidden">
-                    <Header__Dashboard title={`Customers`} />
+                    <Header__Dashboard breadcrumbs={breadCrumbs} />
                     <div className="w-full h-[5%]">
-                        <h1 className='text-black font-[600] text-[1.2rem]'>
+                        <h1 className='text-black dark:text-white font-[600] text-[1.2rem]'>
                             Manage
                         </h1>
                     </div>
@@ -262,43 +310,45 @@ export default function Customers() {
                         <TabPanel value="1" className='w-full h-[82%]'>
                             <div className="w-full h-[5%] flex justify-between items-center pt-[.5rem] pb-[2rem]">
                                 <div className="flex justify-start items-center gap-[1rem]">
-                                    <h1>
+                                    <h1 className='text-black dark:text-white'>
                                         Search
                                     </h1>
                                     <input
+                                        onChange={handleOnChangeRBUsers}
                                         type="text"
-                                        className="block w-[20rem] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        className="block w-[20rem] rounded-md border-0 px-[.7rem] py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                                         placeholder='Search here...'
                                     />
                                 </div>
                                 <div className="w-full flex items-center justify-end gap-x-3">
                                     <Link
                                         to={`/customers/addcustomer`}
-                                        className="rounded-md bg-[#111111] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#333333] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                        className="rounded-md bg-[#4e4f50] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#333333] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                     >
-                                        Open Account
+                                        Open Customer
                                     </Link>
                                 </div>
                             </div>
                             <div className="w-full h-[90%]">
-                                <DataGrids columnsTest={CustomerColumns} rowsTest={details} descCol={`id`} />
+                                <DataGrids columnsTest={CustomerColumns} rowsTest={searchIdRbUser === '' ? rbusers || [] : searchrbusers || []} descCol={`id`} />
                             </div>
                         </TabPanel>
                         <TabPanel value="2" className='w-full h-[82%]'>
                             <div className="w-full h-[5%] flex justify-between items-center pt-[.5rem] pb-[2rem]">
                                 <div className="flex justify-start items-center gap-[1rem]">
-                                    <h1>
+                                    <h1 className='text-black dark:text-white'>
                                         Search
                                     </h1>
                                     <input
+                                        onChange={handleOnChangeRBAccounts}
                                         type="text"
-                                        className="block w-[20rem] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        className="block w-[20rem] rounded-md border-0 px-[.7rem] py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                                         placeholder='Search here...'
                                     />
                                 </div>
                             </div>
                             <div className="w-full h-[90%]">
-                                <DataGrids columnsTest={AccountColumns} rowsTest={accounts} descCol={`accountno`} colVisibility={{ id: false }} />
+                                <DataGrids columnsTest={AccountColumns} rowsTest={searchIdRbAccounts === '' ? rbaccounts || [] : searchrbaccounts || []} descCol={`accountno`} colVisibility={{ id: false }} />
                             </div>
                         </TabPanel>
                     </TabContext>
@@ -308,3 +358,7 @@ export default function Customers() {
     )
 }
 
+const breadCrumbs = [
+    // { title: 'Home', href: '/', isLink: true },
+    { title: 'Customers', isLink: false },
+]

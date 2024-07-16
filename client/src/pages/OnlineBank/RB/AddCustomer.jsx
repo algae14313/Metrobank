@@ -1,29 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Sidebar from '../../../components/Sidebar'
 import Header__Dashboard from '../../../components/Header__dashboard'
 import { useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { fetchCredentials } from '@/api/Credentials'
 
 export default function AddCustomer() {
+    const navigate = useNavigate()
     const [values, setValues] = useState({
         firstname: '',
         lastname: '',
         email: '',
         mobileno: ''
     })
-    const navigate = useNavigate()
 
-    useEffect(() => {
-        fetchCredentials()
-    }, [])
-
-    const fetchCredentials = () => {
-        try {
-            const credentials = sessionStorage.getItem('credentials')
-            if (!credentials) return navigate('/metrobank')
-        } catch (error) {
-            console.error(error)
-        }
-    }
+    const { data: credentials, isLoading: credentialsLoading } = useQuery({
+        queryFn: () => fetchCredentials(),
+        queryKey: ['credentialsAddCustomer']
+    })
 
     const handleNext = () => {
         sessionStorage.setItem('customerdetails', JSON.stringify(values))
@@ -43,12 +37,16 @@ export default function AddCustomer() {
         }))
     }
 
+    useEffect(() => {
+        if (!credentialsLoading && !credentials) { navigate('/metrobank') }
+    }, [credentials, navigate])
+
     return (
         <>
             <div className="flex">
                 <Sidebar />
                 <div className="w-[80%] h-screen flex flex-col justify-start items-center p-[1rem] overflow-auto ">
-                    <Header__Dashboard linkName={`Customers`} link={`/customers`} title={`Add Customer`} />
+                    <Header__Dashboard breadcrumbs={breadCrumbs} />
                     <div className='w-full h-[95%] flex flex-col justify-start items-center px-[5rem]'>
                         <div className="space-y-12 pt-[5rem] pb-[20rem]  ">
                             <div className="border-b border-gray-900/10 pb-12 ">
@@ -67,7 +65,7 @@ export default function AddCustomer() {
                                                 name="firstname"
                                                 id="firstname"
                                                 autoComplete="given-name"
-                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                className="block w-full rounded-md border-0 px-[.7rem] py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                                             />
                                         </div>
                                     </div>
@@ -83,7 +81,7 @@ export default function AddCustomer() {
                                                 name="lastname"
                                                 id="lastname"
                                                 autoComplete="family-name"
-                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                className="block w-full rounded-md border-0 px-[.7rem] py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                                             />
                                         </div>
                                     </div>
@@ -100,7 +98,7 @@ export default function AddCustomer() {
                                                 name="email"
                                                 type="email"
                                                 autoComplete="email"
-                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                className="block w-full rounded-md border-0 px-[.7rem] py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                                             />
                                         </div>
                                     </div>
@@ -116,7 +114,7 @@ export default function AddCustomer() {
                                                 name="mobileno"
                                                 type="text"
                                                 inputMode='numeric'
-                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                className="block w-full rounded-md border-0 px-[.7rem] py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                                             />
                                         </div>
                                     </div>
@@ -143,3 +141,8 @@ export default function AddCustomer() {
         </>
     )
 }
+
+const breadCrumbs = [
+    { title: 'Customers', href: '/customers', isLink: true },
+    { title: 'Add Customer', isLink: false },
+]

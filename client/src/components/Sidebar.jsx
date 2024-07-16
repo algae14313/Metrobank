@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from 'react';
-import MenuIcon from '@mui/icons-material/Menu';
 import GridViewIcon from '@mui/icons-material/GridView';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
@@ -12,161 +10,152 @@ import BookOutlinedIcon from '@mui/icons-material/BookOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import AccessibilityOutlinedIcon from '@mui/icons-material/AccessibilityOutlined';
-import AddCardOutlinedIcon from '@mui/icons-material/AddCardOutlined';
-import HourglassEmptyOutlinedIcon from '@mui/icons-material/HourglassEmptyOutlined';
 import SyncAltOutlinedIcon from '@mui/icons-material/SyncAltOutlined';
+import { useQuery } from '@tanstack/react-query'
+import { fetchCredentials } from '@/api/Credentials';
+import { fetchAccount } from '@/api/Accounts';
 
 export default function Sidebar() {
-    const [userRole, setUserRole] = useState('');
-    const [isCollapsed, setIsCollapsed] = useState(false);
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
-    useEffect(() => {
-        fetchCredentials();
-    }, []);
+    const { data: credentials, isLoading: credentialsLoading, isFetched: credentialsFetched } = useQuery({
+        queryFn: () => fetchCredentials(),
+        queryKey: ['sidebarCredentials']
+    })
 
-    const fetchCredentials = () => {
-        const credentials = sessionStorage.getItem('credentials');
-        if (!credentials) return navigate('/metrobank');
-        const { role } = JSON.parse(credentials);
-        setUserRole(role);
+    const userId = credentials?.userId
+    const role = credentials?.role
+
+    const { data: carddetails, isLoading: cardLoading } = useQuery({
+        queryFn: () => fetchAccount({ userId }),
+        queryKey: ['sidebarBalance', { userId }],
+        enabled: !!userId,
+        refetchInterval: 5000
+    });
+
+    const maskAccountNumber = (accountNumber) => {
+        if (accountNumber?.length !== 9) return accountNumber;
+        return '******' + accountNumber.slice(-3);
     };
 
     const handleLogout = () => {
         sessionStorage.clear();
-        window.location.reload();
-    };
-
-    const toggleSidebar = () => {
-        setIsCollapsed(!isCollapsed);
+        navigate('/unionbank')
     };
 
     return (
         <>
-            <div className={`h-screen px-1 py-4 bg-[#ffffff] border-r border-gray-900/10 overflow-auto transition-width duration-300 ${isCollapsed ? 'w-[5%]' : 'lg:w-[20%]'}`}>
-                <div className="w-full h-[8%] flex justify-center items-center lg:justify-between scale-70 sm:scale-70 md:scale-90 lg:scale-100 py-4">
-                    <h1 className={`hidden lg:block text-[0.7rem] sm:text-[0.8rem] md:text-[0.9rem] lg:text-[1rem] ${isCollapsed ? 'hidden' : 'block'}`}>
-                        {userRole === 'admin' && 'Administrator'}
-                        {userRole === 'hr' && 'Human Resource'}
-                        {userRole === 'it' && 'IT Department'}
-                        {userRole === 'rb' && 'Retail Banking'}
-                        {userRole === 'developer' && 'Metrobank'}
-                        {userRole === 'user' && 'Metrobank'}
-                    </h1>
-                    <MenuIcon onClick={toggleSidebar} style={{ cursor: 'pointer', fontSize: '2rem' }} />
-                </div>
+            <div className="sm:w-[none] md:w-[none] lg:w-[20%] h-screen px-[.1rem] sm:px-[.3rem] md:px-[.5rem] lg:px-[1rem] py-[1rem] bg-[#ffffff] dark:bg-[#171717] border-r border-gray-900/10 overflow-auto">
+                {
+                    carddetails && (
+                        <div className="rounded-xl shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1)] bg-[#111111] w-full min-h-[8rem] flex justify-center items-start flex-col px-[1rem] gap-[.5rem]">
+                            <div className="w-full flex justify-start items-center gap-[.5rem]">
+                                <div className="lex flex-col justify-center items-start">
+                                    <h1 className='text-white'>REGULAR SAVINGS</h1>
+                                    <h1 className='text-white'>{maskAccountNumber(carddetails?.accountno)}</h1>
+                                </div>
+                            </div>
+
+                            <div className="w-full flex justify-between items-center">
+                                <h1 className='text-white text-[.9rem]'>Balance</h1>
+                                <h1 className='text-white text-[.9rem]'>PHP {carddetails?.balance}</h1>
+                            </div>
+                        </div>
+                    )
+                }
+
                 <div className="w-full flex flex-col justify-between items-start pb-[6rem]">
                     <div className="w-full flex flex-col">
-                        <div className="hnavs w-full py-4 flex flex-col gap-1 justify-start items-start">
-                            <NavLink to='/' className="w-full flex justify-start items-center gap-4 px-4 py-2 rounded-md scale-70 sm:scale-80 md:scale-90 lg:scale-100">
+                        <div className="hnavs w-full py-[1rem] flex flex-col gap-[.2rem] justify-start items-start">
+                            <NavLink to={`/`} className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
                                 <GridViewIcon />
-                                <h1 className={`hidden lg:block text-[#3D4751] text-[0.7rem] sm:text-[0.8rem] md:text-[0.7rem] lg:text-[0.9rem] ${isCollapsed ? 'hidden' : 'block'}`}>
-                                    Dashboard
-                                </h1>
+                                Dashboard
                             </NavLink>
-                            {(userRole === 'user' || userRole === 'developer') && (
-                                <>
-                                    <NavLink to='/statement' className="w-full flex justify-start items-center gap-4 px-4 py-2 rounded-md scale-70 sm:scale-80 md:scale-90 lg:scale-100">
-                                        <ReceiptLongOutlinedIcon />
-                                        <h1 className={`hidden lg:block text-[#3D4751] text-[0.7rem] sm:text-[0.8rem] md:text-[0.7rem] lg:text-[0.9rem] ${isCollapsed ? 'hidden' : 'block'}`}>
+                            {
+                                (role === 'user' || role === 'developer') && (
+                                    <>
+                                        <NavLink to='/statement' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                                            <ReceiptLongOutlinedIcon />
                                             View Statement
-                                        </h1>
-                                    </NavLink>
-                                    <NavLink to='/transfer' className="w-full flex justify-start items-center gap-4 px-4 py-2 rounded-md scale-70 sm:scale-80 md:scale-90 lg:scale-100">
-                                        <MoveDownOutlinedIcon />
-                                        <h1 className={`hidden lg:block text-[#3D4751] text-[0.7rem] sm:text-[0.8rem] md:text-[0.7rem] lg:text-[0.9rem] ${isCollapsed ? 'hidden' : 'block'}`}>
-                                            Make a Transfer
-                                        </h1>
-                                    </NavLink>
-                                </>
-                            )}
-                            {(userRole === 'it' || userRole === 'admin') && (
-                                <NavLink to='/developers' className="w-full flex justify-start items-center gap-4 px-4 py-2 rounded-md scale-70 sm:scale-80 md:scale-90 lg:scale-100">
-                                    <CodeOutlinedIcon />
-                                    <h1 className={`hidden lg:block text-[#3D4751] text-[0.7rem] sm:text-[0.8rem] md:text-[0.7rem] lg:text-[0.9rem] ${isCollapsed ? 'hidden' : 'block'}`}>
+                                        </NavLink>
+                                        <NavLink to='/transfer' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                                            <MoveDownOutlinedIcon />
+                                            Make a transfer
+                                        </NavLink>
+                                    </>
+                                )
+                            }
+
+                            {
+                                (role === 'it' || role === 'admin') && (
+                                    <NavLink to='/developers' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                                        <CodeOutlinedIcon />
                                         Developers
-                                    </h1>
-                                </NavLink>
-                            )}
-                            {(userRole === 'hr' || userRole === 'admin') && (
-                                <NavLink to='/employees' className="w-full flex justify-start items-center gap-4 px-4 py-2 rounded-md scale-70 sm:scale-80 md:scale-90 lg:scale-100">
-                                    <SupervisorAccountOutlinedIcon />
-                                    <h1 className={`hidden lg:block text-[#3D4751] text-[0.7rem] sm:text-[0.8rem] md:text-[0.7rem] lg:text-[0.9rem] ${isCollapsed ? 'hidden' : 'block'}`}>
+                                    </NavLink>
+                                )
+                            }
+                            {
+                                (role === 'hr' || role === 'admin') && (
+                                    <NavLink to='/employees' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                                        <SupervisorAccountOutlinedIcon />
                                         Employees
-                                    </h1>
-                                </NavLink>
-                            )}
-                            {(userRole === 'rb' || userRole === 'admin') && (
-                                <>
-                                    <NavLink to='/ledger' className="w-full flex justify-start items-center gap-4 px-4 py-2 rounded-md scale-70 sm:scale-80 md:scale-90 lg:scale-100">
-                                        <SyncAltOutlinedIcon />
-                                        <h1 className={`hidden lg:block text-[#3D4751] text-[0.7rem] sm:text-[0.8rem] md:text-[0.7rem] lg:text-[0.9rem] ${isCollapsed ? 'hidden' : 'block'}`}>
+                                    </NavLink>
+                                )
+                            }
+                            {
+                                (role === 'rb' || role === 'admin') && (
+                                    <>
+                                        <NavLink to='/ledger' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                                            <SyncAltOutlinedIcon />
                                             Ledger
-                                        </h1>
-                                    </NavLink>
-                                    <NavLink to='/deposit' className="w-full flex justify-start items-center gap-4 px-4 py-2 rounded-md scale-70 sm:scale-80 md:scale-90 lg:scale-100">
-                                        <AddCardOutlinedIcon />
-                                        <h1 className={`hidden lg:block text-[#3D4751] text-[0.7rem] sm:text-[0.8rem] md:text-[0.7rem] lg:text-[0.9rem] ${isCollapsed ? 'hidden' : 'block'}`}>
-                                            Deposit
-                                        </h1>
-                                    </NavLink>
-                                    <NavLink to='/withdrawal' className="w-full flex justify-start items-center gap-4 px-4 py-2 rounded-md scale-70 sm:scale-80 md:scale-90 lg:scale-100">
-                                        <HourglassEmptyOutlinedIcon />
-                                        <h1 className={`hidden lg:block text-[#3D4751] text-[0.7rem] sm:text-[0.8rem] md:text-[0.7rem] lg:text-[0.9rem] ${isCollapsed ? 'hidden' : 'block'}`}>
-                                            Withdrawal
-                                        </h1>
-                                    </NavLink>
-                                    <NavLink to='/customers' className="w-full flex justify-start items-center gap-4 px-4 py-2 rounded-md scale-70 sm:scale-80 md:scale-90 lg:scale-100">
-                                        <AccessibilityOutlinedIcon />
-                                        <h1 className={`hidden lg:block text-[#3D4751] text-[0.7rem] sm:text-[0.8rem] md:text-[0.7rem] lg:text-[0.9rem] ${isCollapsed ? 'hidden' : 'block'}`}>
+                                        </NavLink>
+                                        <NavLink to='/customers' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                                            <AccessibilityOutlinedIcon />
                                             Manage Customers
-                                        </h1>
-                                    </NavLink>
-                                </>
-                            )}
+                                        </NavLink>
+                                    </>
+                                )
+                            }
                         </div>
-                        <h1 className={`hidden lg:block text-[#9CA3AF] text-[0.3rem] sm:text-[0.5rem] md:text-[0.7rem] lg:text-[0.9rem] ${isCollapsed ? 'hidden' : 'block'}`}>Settings</h1>
-                        <div className="hnavs w-full py-4 flex flex-col justify-start items-start gap-1">
-                            <NavLink to='/profile' className="w-full flex justify-start items-center gap-4 px-4 py-2 rounded-md scale-70 sm:scale-80 md:scale-90 lg:scale-100">
+                        <h1 className='hidden sm:hidden md:hidden lg:block text-[#9CA3AF] text-[.3rem] sm:text-[.5rem] md:text-[.7rem] lg:text-[.9rem]'>Settings</h1>
+                        <div className="hnavs w-full py-[1rem] flex flex-col justify-start items-start gap-[.2rem]">
+                            <NavLink to='/profile' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
                                 <Person2OutlinedIcon />
-                                <h1 className={`hidden lg:block text-[#3D4751] text-[0.7rem] sm:text-[0.8rem] md:text-[0.7rem] lg:text-[0.9rem] ${isCollapsed ? 'hidden' : 'block'}`}>
-                                    Profile
-                                </h1>
+                                Profile
                             </NavLink>
-                            {(userRole === 'it' || userRole === 'admin') && (
-                                <>
-                                    <NavLink to='/auditlog' className="w-full flex justify-start items-center gap-4 px-4 py-2 rounded-md scale-70 sm:scale-80 md:scale-90 lg:scale-100">
-                                        <BookOutlinedIcon />
-                                        <h1 className={`hidden lg:block text-[#3D4751] text-[0.7rem] sm:text-[0.8rem] md:text-[0.7rem] lg:text-[0.9rem] ${isCollapsed ? 'hidden' : 'block'}`}>
+                            {
+                                (role === 'it' || role === 'admin') && (
+                                    <>
+                                        <NavLink to='/auditlog' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                                            <BookOutlinedIcon />
                                             Audit Log
-                                        </h1>
-                                    </NavLink>
-                                    <NavLink to='/security' className="w-full flex justify-start items-center gap-4 px-4 py-2 rounded-md scale-70 sm:scale-80 md:scale-90 lg:scale-100">
-                                        <GppGoodOutlinedIcon />
-                                        <h1 className={`hidden lg:block text-[#3D4751] text-[0.7rem] sm:text-[0.8rem] md:text-[0.7rem] lg:text-[0.9rem] ${isCollapsed ? 'hidden' : 'block'}`}>
+                                        </NavLink>
+                                        <NavLink to='/security' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                                            <GppGoodOutlinedIcon />
                                             Security
-                                        </h1>
-                                    </NavLink>
-                                </>
-                            )}
-                            {(userRole === 'developer' || userRole === 'admin') && (
-                                <NavLink to='/apikeys' className="w-full flex justify-start items-center gap-4 px-4 py-2 rounded-md scale-70 sm:scale-80 md:scale-90 lg:scale-100">
-                                    <HttpOutlinedIcon />
-                                    <h1 className={`hidden lg:block text-[#3D4751] text-[0.7rem] sm:text-[0.8rem] md:text-[0.7rem] lg:text-[0.9rem] ${isCollapsed ? 'hidden' : 'block'}`}>
+                                        </NavLink>
+                                    </>
+                                )
+                            }
+                            {
+                                (role === 'developer' || role === 'admin') && (
+                                    <NavLink to='/apikeys' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                                        <HttpOutlinedIcon />
                                         API Keys
-                                    </h1>
-                                </NavLink>
-                            )}
+                                    </NavLink>
+                                )
+                            }
                         </div>
                     </div>
-                    <div onClick={handleLogout} className="w-full flex justify-start items-center gap-4 px-4 py-2 rounded-md scale-70 sm:scale-80 md:scale-90 lg:scale-100 cursor-pointer hover:bg-[#d4d4d4] duration-300 ease">
-                        <ExitToAppOutlinedIcon />
-                        <button className={`hidden lg:block text-[#3D4751] text-[0.7rem] sm:text-[0.8rem] md:text-[0.7rem] lg:text-[0.9rem] ${isCollapsed ? 'hidden' : 'block'}`}>
+                    <div onClick={handleLogout} className="w-full flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1] cursor-pointer hover:bg-[#323232] duration-300 ease">
+                        <ExitToAppOutlinedIcon style={{color: 'white'}} />
+                        <button className='hidden sm:hidden md:hidden lg:block text-[#ffffff] text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem]'>
                             Logout
                         </button>
                     </div>
                 </div>
             </div>
         </>
-    );
+
+    )
 }

@@ -1,67 +1,37 @@
-import React, { useEffect, useState } from 'react'
-import Sidebar from '../../components/Sidebar';
-import Header__Dashboard from '../../components/Header__dashboard';
-import DataGrids from '../../components/DataGrids';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios'
-const { VITE_HOST, VITE_ADMIN_TOKEN } = import.meta.env
+import { useEffect } from 'react'
+import Sidebar from '../../components/Sidebar'
+import Header__Dashboard from '../../components/Header__dashboard'
+import DataGrids from '../../components/DataGrids'
+import { useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { fetchUserTransactions } from '@/api/Transactions'
+import { fetchCredentials } from '@/api/Credentials'
 
 export default function Transactions() {
-    const [value, setValue] = useState('1');
-    const [userTransactions, setUserTransactions] = useState([])
     const navigate = useNavigate()
 
+    const { data: credentials, isLoading: credentialsLoading } = useQuery({
+        queryFn: () => fetchCredentials(),
+        queryKey: ['statementCredentials']
+    })
+
+    const userId = credentials?.userId
+
+    const { data: usertransactions, isLoading: usertransactionsLoading } = useQuery({
+        queryFn: () => fetchUserTransactions({ userId }),
+        queryKey: ['UserTransactions', { userId }],
+        enabled: !!userId
+    })
+
     useEffect(() => {
-        fetchCredentials()
-        fetchUserTransactions()
-    }, [])
-
-    const fetchCredentials = () => {
-        try {
-            const credentials = sessionStorage.getItem('credentials')
-            if (!credentials) return navigate('/metrobank')
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
-    const fetchUserTransactions = async () => {
-        try {
-            const credentials = sessionStorage.getItem('credentials')
-            const { userId } = JSON.parse(credentials)
-
-            const res = await axios.get(`${VITE_HOST}/api/transactions/${userId}`, {
-                headers: {
-                    Authorization: `Bearer ${VITE_ADMIN_TOKEN}`
-                }
-            })
-
-            const transactions = res?.data?.data
-            const formattedData = transactions.map((trans, index) => ({
-                id: index + 1,
-                date: trans?.createdAt,
-                reference: trans?._id,
-                debit: trans?.amount,
-                credit: trans?.amount,
-                description: trans?.description,
-                transactionType: trans?.transactionType,
-                balance: trans?.balance
-            }))
-            setUserTransactions(formattedData)
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
+        if (!credentialsLoading && !credentials) { navigate('/metrobank') }
+    }, [credentials, navigate])
 
     const renderDebitCell = (params) => {
         return (
             <div className="w-full h-full flex justify-center items-center">
                 {
-                    (params.row.transactionType === 'withdrawal' || params.row.transactionType === 'transfer_debit') ? params.row.debit : '---'
+                    (params.row.transactionType === 'deposit' || params.row.transactionType === 'transfer_credit') ? params.row.debit : '---'
                 }
             </div>
 
@@ -71,11 +41,20 @@ export default function Transactions() {
     const renderCreditCell = (params) => {
         return (
             <div className="w-full h-full flex justify-center items-center">
-                <h1 className='font-bold'>
-                    {
-                        (params.row.transactionType === 'deposit' || params.row.transactionType === 'transfer_credit') ? params.row.credit : '---'
-                    }
-                </h1>
+                {
+                    (params.row.transactionType === 'withdrawal' || params.row.transactionType === 'transfer_debit') ? params.row.credit : '---'
+                }
+            </div>
+
+        );
+    };
+
+    const renderServiceFeeCell = (params) => {
+        return (
+            <div className="w-full h-full flex justify-center items-center">
+                {
+                    (params.row.transactionType === 'withdrawal' || params.row.transactionType === 'transfer_debit') ? params.row.servicefee : '---'
+                }
             </div>
 
         );
@@ -92,7 +71,7 @@ export default function Transactions() {
         {
             field: 'date',
             headerName: 'Date',
-            width: 250,
+            width: 200,
             headerAlign: 'center',
             align: 'center'
         },
@@ -121,9 +100,17 @@ export default function Transactions() {
             renderCell: renderCreditCell
         },
         {
+            field: 'servicefee',
+            headerName: 'Service fee',
+            width: 200,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: renderServiceFeeCell
+        },
+        {
             field: 'balance',
             headerName: 'Balance',
-            width: 300,
+            width: 200,
             headerAlign: 'center',
             align: 'center'
         },
@@ -141,7 +128,7 @@ export default function Transactions() {
             <div className="flex">
                 <Sidebar />
                 <div className="w-[80%] h-screen flex flex-col justify-start items-start p-[1rem] overflow-auto">
-                    <Header__Dashboard title={`View Statement`} />
+                    <Header__Dashboard breadcrumbs={breadCrumbs} />
                     <div className="w-full h-[95%] flex flex-col justify-start items-start gap-[1rem]">
                         <div className="w-full h-[5%]">
                             <h1 className='text-black font-[600] text-[1.2rem]'>
@@ -149,7 +136,7 @@ export default function Transactions() {
                             </h1>
                         </div>
                         <div className="w-full h-[90%]">
-                            <DataGrids columnsTest={UserColumns} rowsTest={userTransactions} descCol={`id`} colVisibility={{ id: false }} />
+                            <DataGrids columnsTest={UserColumns} rowsTest={usertransactions || []} descCol={`id`} colVisibility={{ id: false }} />
                         </div>
                     </div>
                 </div>
@@ -157,3 +144,8 @@ export default function Transactions() {
         </>
     )
 }
+
+const breadCrumbs = [
+    // { title: 'Home', href: '/', isLink: true },
+    { title: 'View Statement', isLink: false },
+]

@@ -7,6 +7,7 @@ const TransactionMiddleware = require('../middleware/Transaction.middleware')
 router.post('/deposittransaction',
     TransactionMiddleware.CheckDeveloperTokenValid,
     TransactionMiddleware.CreateTransactionCheckEmptyFields,
+    TransactionMiddleware.CheckDepositAccountIfExist,
     TransactionController.DepositTransaction
 )
 
@@ -19,6 +20,7 @@ router.post('/withdrawtransaction',
 router.post('/transfertransaction',
     TransactionMiddleware.CheckUserTokenValid,
     TransactionMiddleware.CreateTransactionCheckEmptyFields,
+    TransactionMiddleware.CheckAccountIfExist,
     TransactionController.TransferTransaction
 )
 

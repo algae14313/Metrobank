@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Sidebar from '../../../components/Sidebar'
 import Header__Dashboard from '../../../components/Header__dashboard'
@@ -8,11 +8,6 @@ const { VITE_HOST, VITE_ADMIN_TOKEN } = import.meta.env
 
 export default function Ledger() {
     const { accountid } = useParams()
-    const [values, setValues] = useState([])
-    const [details, setDetails] = useState({
-        role: '',
-        uid: ''
-    })
     const [userTransactions, setUserTransactions] = useState([])
     const navigate = useNavigate()
 
@@ -28,13 +23,6 @@ export default function Ledger() {
         try {
             const credentials = sessionStorage.getItem('credentials')
             if (!credentials) return navigate('/metrobank')
-            const { userId, role } = JSON.parse(credentials)
-            setDetails((prev) => ({
-                ...prev,
-                role: role,
-                uid: userId
-            }))
-
         } catch (error) {
             console.error(error)
         }
@@ -57,6 +45,7 @@ export default function Ledger() {
                 credit: trans?.amount,
                 description: trans?.description,
                 transactionType: trans?.transactionType,
+                servicefee: trans?.fee,
                 balance: trans?.balance
             }))
             setUserTransactions(formattedData)
@@ -65,11 +54,44 @@ export default function Ledger() {
         }
     }
 
+    const handleSearchTransaction = async (e) => {
+        try {
+            const { value } = e.target
+            if (value === '') return fetchUserTransactions()
+
+            const res = await axios.get(`${VITE_HOST}/api/searchtransactions/${value}`, {
+                headers: {
+                    Authorization: `Bearer ${VITE_ADMIN_TOKEN}`
+                }
+            })
+            if (res?.data?.success) {
+                const transactions = res?.data?.data
+                const formattedData = transactions.map((trans, index) => ({
+                    id: index + 1,
+                    date: trans?.createdAt,
+                    reference: trans?._id,
+                    debit: trans?.amount,
+                    credit: trans?.amount,
+                    description: trans?.description,
+                    transactionType: trans?.transactionType,
+                    servicefee: trans?.fee,
+                    balance: trans?.balance
+                }))
+                setUserTransactions(formattedData)
+            } else {
+                setUserTransactions([])
+            }
+        } catch (error) {
+            console.error()
+        }
+    }
+
     const renderDebitCell = (params) => {
         return (
             <div className="w-full h-full flex justify-center items-center">
                 {
-                    (params.row.transactionType === 'withdrawal' || params.row.transactionType === 'transfer_debit') ? params.row.debit : '---'
+                    (params.row.transactionType === 'withdrawal' || params.row.transactionType === 'transfer_debit') ? params.row.credit : '---'
+
                 }
             </div>
 
@@ -79,11 +101,20 @@ export default function Ledger() {
     const renderCreditCell = (params) => {
         return (
             <div className="w-full h-full flex justify-center items-center">
-                <h1 className='font-bold'>
-                    {
-                        (params.row.transactionType === 'deposit' || params.row.transactionType === 'transfer_credit') ? params.row.credit : '---'
-                    }
-                </h1>
+                {
+                    (params.row.transactionType === 'deposit' || params.row.transactionType === 'transfer_credit') ? params.row.debit : '---'
+                }
+            </div>
+
+        );
+    };
+
+    const renderServiceFeeCell = (params) => {
+        return (
+            <div className="w-full h-full flex justify-center items-center">
+                {
+                    (params.row.transactionType === 'withdrawal' || params.row.transactionType === 'transfer_debit') ? params.row.servicefee : '---'
+                }
             </div>
 
         );
@@ -113,25 +144,33 @@ export default function Ledger() {
             align: 'center'
         },
         {
-            field: 'withdrawal',
-            headerName: 'Withdrawal',
-            width: 200,
-            headerAlign: 'center',
-            align: 'center',
-            renderCell: renderDebitCell
-        },
-        {
             field: 'deposit',
             headerName: 'Deposit',
-            width: 200,
+            width: 150,
             headerAlign: 'center',
             align: 'center',
             renderCell: renderCreditCell
         },
         {
+            field: 'withdrawal',
+            headerName: 'Withdrawal',
+            width: 150,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: renderDebitCell
+        },
+        {
+            field: 'servicefee',
+            headerName: 'Service fee',
+            width: 150,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: renderServiceFeeCell
+        },
+        {
             field: 'balance',
             headerName: 'Balance',
-            width: 300,
+            width: 150,
             headerAlign: 'center',
             align: 'center'
         },
@@ -140,7 +179,7 @@ export default function Ledger() {
             headerName: 'Description',
             width: 300,
             headerAlign: 'center',
-            align: 'center'
+            align: 'left'
         }
     ]
 
@@ -149,7 +188,7 @@ export default function Ledger() {
             <div className="flex">
                 <Sidebar />
                 <div className="w-[80%] h-screen flex flex-col justify-start items-start p-[1rem] overflow-auto">
-                    <Header__Dashboard title={`View Statement`} linkName={`View Accounts`} link={`/ledger`} />
+                    <Header__Dashboard breadcrumbs={breadCrumbs} title={`View Statement`} linkName={`View Accounts`} link={`/ledger`} />
                     <div className="w-full h-[95%] flex flex-col justify-start items-start gap-[1rem]">
                         <div className="w-full h-[5%]">
                             <h1 className='text-black font-[600] text-[1.2rem]'>
@@ -161,8 +200,9 @@ export default function Ledger() {
                                 Search
                             </h1>
                             <input
+                                onChange={handleSearchTransaction}
                                 type="text"
-                                className="block w-[20rem] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                className="block w-[20rem] rounded-md border-0 px-[.7rem] py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                                 placeholder='Search here...'
                             />
                         </div>
@@ -175,3 +215,8 @@ export default function Ledger() {
         </>
     )
 }
+
+const breadCrumbs = [
+    { title: 'View Accounts', href: '/ledger', isLink: true },
+    { title: 'View Statement', isLink: false },
+]

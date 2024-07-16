@@ -36,9 +36,25 @@ router.post('/deletetoken/:developerId',
     DeveloperController.DeleteToken
 )
 
+router.get('/unionbank/myaccount/auth/:accountno',
+    DeveloperMiddleware.CheckDeveloperTokenValid,
+    DeveloperController.GenerateUrl
+)
+
+router.get('/unionbank/myaccount/transactions',
+    DeveloperMiddleware.CheckDeveloperTokenValid,
+    DeveloperMiddleware.CheckUserTokenValid,
+    DeveloperController.GetAllUserTransaction
+)
+
 router.get('/it/auditlog',
     UserMiddleware.CheckDeveloperTokenValid,
     DeveloperController.GetAllAuditLog
+)
+
+router.get('/it/auditlog/:searchId',
+    UserMiddleware.CheckDeveloperTokenValid,
+    DeveloperController.SearchAuditLog
 )
 
 router.get('/it/backup',

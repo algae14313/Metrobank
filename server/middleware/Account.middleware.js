@@ -45,6 +45,17 @@ const AccountMidlleware = {
             res.status(400).json({ error: `CreateAccountCheckAccountIfExists in account middleware error ${error}` });
         }
     },
+    CheckAccountIfExists: async (req, res, next) => {
+        try {
+            const { uid } = req.params
+
+            const data = await AccountModel.findOne({ userId: uid })
+            if (data) return next()
+            res.json({ success: false, message: 'There are no account existing.' })
+        } catch (error) {
+            res.status(400).json({ error: `CreateAccountCheckAccountIfExists in account middleware error ${error}` });
+        }
+    },
     CreateAccountCheckAccountNo: async (req, res, next) => {
         try {
             const accounts = await AccountModel.find()

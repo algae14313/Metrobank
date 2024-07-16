@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import Sidebar from '../../../components/Sidebar'
 import Header__Dashboard from '../../../components/Header__dashboard'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+
 const { VITE_HOST, VITE_ADMIN_TOKEN } = import.meta.env
 
 export default function APIKeys() {
@@ -52,15 +53,19 @@ export default function APIKeys() {
             console.log(res?.data)
         } catch (error) {
             console.error(error)
+        } finally {
+            fetchUserTokens()
         }
     }
+
+    // const handleTrans
 
     return (
         <>
             <div className="flex">
                 <Sidebar />
                 <div className="w-[80%] h-screen flex flex-col justify-start items-center p-[1rem] overflow-auto">
-                    <Header__Dashboard title={`API KEYS`} />
+                    <Header__Dashboard breadcrumbs={breadCrumbs} />
                     <div className="w-full h-[95%] px-[10rem] py-[5rem]">
                         <div className="w-full flex justify-between items-center">
                             <div className="px-4 sm:px-0">
@@ -97,3 +102,8 @@ export default function APIKeys() {
         </>
     )
 }
+
+const breadCrumbs = [
+    // { title: 'Home', href: '/', isLink: true },
+    { title: 'API Keys', isLink: false },
+]

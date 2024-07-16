@@ -1,7 +1,6 @@
 const TransactionModel = require('../models/Transactions.model')
 const AccountModel = require('../models/Account.model')
 const AuditLog = require('../models/Auditlog.model')
-const fetch = require('node-fetch')
 
 const Log = async ({ userId, action, collectionName, documentId, changes, description }) => {
     await AuditLog.create({ userId, action, collectionName, documentId, changes, description })
@@ -33,9 +32,9 @@ const TransactionController = {
                 description: `${account} attempted a deposit with an amount of ${amount} with a service fee of 0. The balance changed from ${balance} to ${currentBalance}.`
             })
 
-            res.json({ success: true, message: 'Deposit transaction successfully!' })
+            res.json({ success: true, message: 'Deposit transaction successfully!', balance: currentBalance })
         } catch (error) {
-            res.json({ error: `DepositTransaction in transaction controller error ${error}` });
+            res.json({ success: false, message: 'DepositTransaction in transaction controller error', error })
         }
     },
     WithdrawTransaction: async (req, res) => {
@@ -67,9 +66,16 @@ const TransactionController = {
                 description: `${account} attempted a withdrawal with an amount of ${amount} with a service fee of ${tax}, totaling ${taxAmount}. The balance changed from ${balance} to ${currentBalance}.`
             })
 
+            // io.emit('transaction', {
+            //     type: 'withdrawal',
+            //     account: account,
+            //     amount: amount,
+            //     balance: currentBalance
+            // });
+
             res.json({ success: true, message: 'Withdrawal transaction successfully!' })
         } catch (error) {
-            res.json({ error: `WithdrawTransaction in transaction controller error ${error}` });
+            res.json({ success: false, message: 'WithdrawTransaction in transaction controller error', error })
         }
     },
     TransferTransaction: async (req, res) => {
@@ -77,6 +83,7 @@ const TransactionController = {
             const userIdHeader = req.headers['userid']
 
             const { debitAccount, creditAccount, amount } = req.body
+
             const transferAmount = parseFloat(amount)
             const tax = 150
 
@@ -85,6 +92,37 @@ const TransactionController = {
 
             const { balance: debitBalance } = await AccountModel.findById(debitAccountId)
             const { balance: creditBalance } = await AccountModel.findById(creditAccountId)
+
+            if (debitAccount === creditAccount) {
+                const taxAmount = 0
+
+                if (taxAmount === debitBalance) return res.json({ success: false, message: 'Insufficient Balance!', balance: debitBalance, taxPayable: tax, debitAmount: transferAmount, total: taxAmount })
+
+                const debitFutureBalance = debitBalance - taxAmount
+                const { _id: debitTransactionId } = await TransactionModel.create({ account: debitAccountId, fee: tax, amount: transferAmount, transactionType: 'transfer_debit', description: `Transferred to ${creditAccount}`, status: 'completed', balance: debitFutureBalance, token: `Retail Banking : ${userIdHeader}` })
+
+                await AccountModel.findByIdAndUpdate(debitAccountId, { balance: debitFutureBalance }, { new: true })
+
+                Log({
+                    userId: userIdHeader,
+                    action: 'create',
+                    collectionName: 'Transaction',
+                    documentId: debitTransactionId,
+                    changes: { balance: debitFutureBalance },
+                    description: `${debitAccount} transferred an amount of ${transferAmount} with a service fee of ${tax}, totaling ${taxAmount}. The balance changed from ${debitBalance} to ${debitFutureBalance}.`
+                })
+
+                Log({
+                    userId: userIdHeader,
+                    action: 'update',
+                    collectionName: 'Transaction',
+                    documentId: debitTransactionId,
+                    changes: { balance: debitFutureBalance },
+                    description: `${creditAccount} credited an amount of ${transferAmount} The balance changed from ${creditBalance} to ${debitFutureBalance}`
+                })
+
+                return res.json({ success: true, message: 'Transfer transaction successfully!', reference: debitTransactionId })
+            }
 
             const taxAmount = transferAmount + tax
             if (taxAmount > debitBalance) return res.json({ success: false, message: 'Insufficient Balance!', balance: debitBalance, taxPayable: tax, debitAmount: transferAmount, total: taxAmount })
@@ -116,9 +154,9 @@ const TransactionController = {
                 description: `${creditAccount} credited an amount of ${transferAmount} The balance changed from ${creditBalance} to ${creditFutureBalance}`
             })
 
-            res.json({ success: true, message: 'Transfer transaction successfully!' })
+            res.json({ success: true, message: 'Transfer transaction successfully!', reference: debitTransactionId })
         } catch (error) {
-            res.json({ error: `TransferTransaction in transaction controller error ${error}` });
+            res.json({ success: false, message: 'TransferTransaction in transaction controller error', error })
         }
     },
     GetAllTransaction: async (req, res) => {
@@ -133,13 +171,16 @@ const TransactionController = {
 
             res.json({ success: true, message: 'Fetch transactions successfully!', data: formattedData })
         } catch (error) {
-            res.json({ error: `GetAllTransaction in transaction controller error ${error}` });
+            res.json({ success: false, message: 'GetAllTransaction in transaction controller error', error });
         }
     },
     GetAllUserTransaction: async (req, res) => {
         try {
             const { userId } = req.params
             const { _id: accountId } = await AccountModel.findOne({ userId: userId })
+
+            if (accountId === null) return res.json({ success: false, message: 'No Account' })
+
             const data = await TransactionModel.find({ account: accountId })
 
             const formattedData = data.map(transaction => {
@@ -159,7 +200,7 @@ const TransactionController = {
 
             res.json({ success: true, message: 'Fetch transactions successfully!', data: formattedData })
         } catch (error) {
-            res.json({ error: `GetAllTransaction in transaction controller error ${error}` });
+            res.json({ success: false, message: 'GetAllUserTransaction in transaction controller error', error });
         }
     },
     SearchTransaction: async (req, res) => {
@@ -177,7 +218,7 @@ const TransactionController = {
 
             res.json({ success: true, message: 'Fethced certain account successfully!', data: [{ _id, amount, description, createdAt: formattedCreatedAt, transactionType, balance, fee }] })
         } catch (error) {
-            res.json({ error: `SearchTransactions in transaction controller error ${error}` });
+            res.json({ success: false, message: 'SearchTransaction in transaction controller error', error })
         }
     }
 }

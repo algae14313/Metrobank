@@ -1,23 +1,29 @@
-import React, { useEffect } from 'react'
+import  { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from '../../components/Sidebar'
 import Header__Dashboard from '../../components/Header__dashboard'
+import { useQuery } from '@tanstack/react-query'
+import { fetchAccount } from '@/api/Accounts'
+import { fetchCredentials } from '@/api/Credentials'
 
 export default function AccountStatement() {
     const navigate = useNavigate()
 
-    useEffect(() => {
-        fetchCredentials()
-    }, [])
+    const { data: credentials, isLoading: credentialsLoading } = useQuery({
+        queryFn: () => fetchCredentials(),
+        queryKey: ['carddetailsCredentials']
+    })
+    const userId = credentials?.userId
 
-    const fetchCredentials = () => {
-        try {
-            const credentials = sessionStorage.getItem('credentials')
-            if (!credentials) return navigate('/metrobank')
-        } catch (error) {
-            console.error(error)
-        }
-    }
+    const { data: accounts, isLoading: accountsLoading, isFetched: accountsFetched } = useQuery({
+        queryFn: () => fetchAccount({ userId }),
+        queryKey: ['carddetailsAccounts', { userId }],
+        enabled: !!userId
+    })
+
+    useEffect(() => {
+        if (!credentials && !credentialsLoading) { navigate('/metrobank') }
+    }, [credentials, navigate])
 
     const handleGoBack = () => {
         navigate('/')
@@ -27,25 +33,31 @@ export default function AccountStatement() {
             <div className="flex">
                 <Sidebar />
                 <div className="w-[80%] h-screen flex flex-col justify-start items-center p-[1rem] overflow-auto">
-                    <Header__Dashboard linkName={`Dashboard`} link={`/`} title={`Account Statement`} />
+                    <Header__Dashboard breadcrumbs={breadCrumbs} />
                     <div className="w-full h-[95%] px-[20rem] py-[5rem]">
                         <div className="px-4 sm:px-0">
-                            <h3 className="text-base font-semibold leading-7 text-gray-900">Account Statement</h3>
-                            <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Account details.</p>
+                            <h3 className="text-base font-semibold leading-7 text-gray-900">Card Details</h3>
+                            <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">An information of your card.</p>
                         </div>
                         <div className="border-t border-gray-100 mt-[1.5rem] pb-[20rem]">
                             <dl className="divide-y divide-gray-100 ">
                                 <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                     <dt className="text-sm font-medium leading-6 text-gray-900">Account Type</dt>
-                                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">Regular Savings</dd>
+                                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                                        {accounts?.accountType === 'savings' && 'Regular Savings'}
+                                    </dd>
                                 </div>
                                 <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                     <dt className="text-sm font-medium leading-6 text-gray-900">Account Number</dt>
-                                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">123456789</dd>
+                                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                                        {accounts?.accountno}
+                                    </dd>
                                 </div>
                                 <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                     <dt className="text-sm font-medium leading-6 text-gray-900">Current Balance</dt>
-                                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">PHP 15,999.00</dd>
+                                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                                        PHP {accounts?.balance}
+                                    </dd>
                                 </div>
                                 <div className="w-full flex items-center justify-end gap-x-6 pt-[2rem]">
                                     <button
@@ -63,3 +75,8 @@ export default function AccountStatement() {
         </>
     )
 }
+
+const breadCrumbs = [
+    { title: 'Dashboard', href: '/', isLink: true },
+    { title: 'Card Details', isLink: false },
+]
