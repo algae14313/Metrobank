@@ -5,13 +5,13 @@ const TransactionController = require('../controllers/Transaction.controller')
 const TransactionMiddleware = require('../middleware/Transaction.middleware')
 
 router.post('/deposittransaction',
-    TransactionMiddleware.CheckUserTokenValid,
+    TransactionMiddleware.CheckDeveloperTokenValid,
     TransactionMiddleware.CreateTransactionCheckEmptyFields,
     TransactionController.DepositTransaction
 )
 
 router.post('/withdrawtransaction',
-    TransactionMiddleware.CheckUserTokenValid,
+    TransactionMiddleware.CheckDeveloperTokenValid,
     TransactionMiddleware.CreateTransactionCheckEmptyFields,
     TransactionController.WithdrawTransaction
 )
@@ -19,15 +19,21 @@ router.post('/withdrawtransaction',
 router.post('/transfertransaction',
     TransactionMiddleware.CheckUserTokenValid,
     TransactionMiddleware.CreateTransactionCheckEmptyFields,
+    TransactionMiddleware.CheckAccountIfExist,
     TransactionController.TransferTransaction
 )
 
 router.get('/transactions',
-    TransactionMiddleware.CheckUserTokenValid,
+    TransactionMiddleware.CheckDeveloperTokenValid,
     TransactionController.GetAllTransaction
 )
 
-router.get('/transactions/:accountId',
+router.get('/transactions/:userId',
+    TransactionMiddleware.CheckDeveloperTokenValid,
+    TransactionController.GetAllUserTransaction
+)
+
+router.get('/searchtransactions/:searchId',
     TransactionMiddleware.CheckDeveloperTokenValid,
     TransactionController.SearchTransaction
 )

@@ -1,6 +1,4 @@
 const AccountModel = require('../models/Account.model')
-const DeveloperModel = require('../models/Developer.model')
-const bcrypt = require('bcrypt')
 
 const AccountMidlleware = {
     CheckUserTokenValid: async (req, res, next) => {
@@ -43,6 +41,17 @@ const AccountMidlleware = {
     CreateAccountCheckAccountIfExists: async (req, res, next) => {
         try {
             next()
+        } catch (error) {
+            res.status(400).json({ error: `CreateAccountCheckAccountIfExists in account middleware error ${error}` });
+        }
+    },
+    CheckAccountIfExists: async (req, res, next) => {
+        try {
+            const { uid } = req.params
+
+            const data = await AccountModel.findOne({ userId: uid })
+            if (data) return next()
+            res.json({ success: false, message: 'There are no account existing.' })
         } catch (error) {
             res.status(400).json({ error: `CreateAccountCheckAccountIfExists in account middleware error ${error}` });
         }

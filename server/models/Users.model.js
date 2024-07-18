@@ -21,16 +21,11 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['developer', 'hr', 'it', 'rb', 'user'],
+        enum: ['developer', 'hr', 'it', 'rb', 'user', 'admin'],
         required: true,
         default: 'user'
     },
     isactive: {
-        type: Boolean,
-        required: true,
-        default: false
-    },
-    isdeveloper: {
         type: Boolean,
         required: true,
         default: false

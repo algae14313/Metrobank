@@ -1,7 +1,5 @@
-const TransactionModel = require('../models/Transactions.model')
-const DeveloperModel = require('../models/Developer.model')
-const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const AccountModel = require('../models/Account.model')
 require('dotenv').config()
 
 const TransactionMidlleware = {
@@ -28,9 +26,8 @@ const TransactionMidlleware = {
             const token = authHeader && authHeader.split(' ')[1]
             if (token === null) return res.json({ authorization: `You are not authorized: null` })
             if (token === undefined) return res.json({ authorization: `You are not authorized: undefined` })
-            const testToken = await DeveloperModel.findOne({ token: token })
 
-            if (testToken || token === process.env.ADMIN_TOKEN) return next()
+            if (token === process.env.ADMIN_TOKEN) return next()
             res.json({ success: false, message: 'A token is required, nor token is incorrect!' })
         } catch (error) {
             res.status(400).json({ error: `CheckDeveloperTokenValid in transaction middleware error ${error}` });
@@ -38,6 +35,19 @@ const TransactionMidlleware = {
     },
     CreateTransactionCheckEmptyFields: async (req, res, next) => {
         try {
+            next()
+        } catch (error) {
+            res.status(400).json({ error: `CreateTransactionCheckEmptyFields in transaction middleware error ${error}` });
+        }
+    },
+    CheckAccountIfExist: async (req, res, next) => {
+        try {
+            const { debitAccount, creditAccount } = req.body
+            const debit = await AccountModel.findOne({ accountno: debitAccount })
+            const credit = await AccountModel.findOne({ accountno: creditAccount })
+
+            if (!debit) return res.json({ success: false, message: 'Debit account does not exist!' })
+            if (!credit) return res.json({ success: false, message: 'Credit account does not exist!' })
             next()
         } catch (error) {
             res.status(400).json({ error: `CreateTransactionCheckEmptyFields in transaction middleware error ${error}` });

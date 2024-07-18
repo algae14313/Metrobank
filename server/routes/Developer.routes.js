@@ -4,6 +4,7 @@ const router = express.Router()
 const DeveloperController = require('../controllers/Developer.controller')
 const DeveloperMiddleware = require('../middleware/Developer.middleware')
 const TransactionMiddleware = require('../middleware/Transaction.middleware')
+const UserMiddleware = require('../middleware/User.middleware')
 
 router.post('/createdevelopertoken/:userId',
     DeveloperMiddleware.CheckAdminTokenValid,
@@ -12,32 +13,58 @@ router.post('/createdevelopertoken/:userId',
     DeveloperController.CreateDeveloperToken
 )
 
-router.post('/developer/deposittransaction',
+router.get('/unionbank/account/:accountno',
     DeveloperMiddleware.CheckDeveloperTokenValid,
     TransactionMiddleware.CreateTransactionCheckEmptyFields,
-    DeveloperController.DepositTransaction
+    DeveloperController.GetRequestAccountNo
 )
 
-router.post('/developer/withdrawtransaction',
+router.post('/unionbank/transfertransaction',
     DeveloperMiddleware.CheckDeveloperTokenValid,
-    TransactionMiddleware.CreateTransactionCheckEmptyFields,
-    DeveloperController.WithdrawTransaction
-)
-
-router.post('/developer/transfertransaction',
-    DeveloperMiddleware.CheckDeveloperTokenValid,
+    TransactionMiddleware.CheckAccountIfExist,
     TransactionMiddleware.CreateTransactionCheckEmptyFields,
     DeveloperController.TransferTransaction
 )
 
-router.get('/tokens',
+router.get('/tokens/:userId',
     DeveloperMiddleware.CheckDeveloperTokenValid,
-    DeveloperController.GetAllTokens
+    DeveloperController.GetUserTokens
 )
 
 router.post('/deletetoken/:developerId',
     DeveloperMiddleware.CheckDeveloperTokenValid,
     DeveloperController.DeleteToken
+)
+
+router.get('/unionbank/myaccount/auth/:accountno',
+    DeveloperMiddleware.CheckDeveloperTokenValid,
+    DeveloperController.GenerateUrl
+)
+
+router.get('/unionbank/myaccount/transactions',
+    DeveloperMiddleware.CheckDeveloperTokenValid,
+    DeveloperMiddleware.CheckUserTokenValid,
+    DeveloperController.GetAllUserTransaction
+)
+
+router.get('/it/auditlog',
+    UserMiddleware.CheckDeveloperTokenValid,
+    DeveloperController.GetAllAuditLog
+)
+
+router.get('/it/auditlog/:searchId',
+    UserMiddleware.CheckDeveloperTokenValid,
+    DeveloperController.SearchAuditLog
+)
+
+router.get('/it/backup',
+    UserMiddleware.CheckDeveloperTokenValid,
+    DeveloperController.BackUp
+)
+
+router.get('/it/restore',
+    UserMiddleware.CheckDeveloperTokenValid,
+    DeveloperController.Restore
 )
 
 module.exports = router
