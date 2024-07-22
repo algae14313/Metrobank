@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useEffect, useState } from 'react'
 import Sidebar from '../../components/Sidebar';
 import Header__Dashboard from '../../components/Header__dashboard';
@@ -52,6 +53,36 @@ export default function Transactions() {
             console.error(error)
         }
     }
+=======
+import { useEffect } from 'react'
+import Sidebar from '../../components/Sidebar'
+import Header__Dashboard from '../../components/Header__dashboard'
+import DataGrids from '../../components/DataGrids'
+import { useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { fetchUserTransactions } from '@/api/Transactions'
+import { fetchCredentials } from '@/api/Credentials'
+
+export default function Transactions() {
+    const navigate = useNavigate()
+
+    const { data: credentials, isLoading: credentialsLoading } = useQuery({
+        queryFn: () => fetchCredentials(),
+        queryKey: ['statementCredentials']
+    })
+
+    const userId = credentials?.userId
+
+    const { data: usertransactions, isLoading: usertransactionsLoading } = useQuery({
+        queryFn: () => fetchUserTransactions({ userId }),
+        queryKey: ['UserTransactions', { userId }],
+        enabled: !!userId
+    })
+
+    useEffect(() => {
+        if (!credentialsLoading && !credentials) { navigate('/metrobank') }
+    }, [credentials, navigate])
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
 
     const renderDebitCell = (params) => {
         return (
@@ -75,6 +106,20 @@ export default function Transactions() {
         );
     };
 
+<<<<<<< HEAD
+=======
+    const renderServiceFeeCell = (params) => {
+        return (
+            <div className="w-full h-full flex justify-center items-center">
+                {
+                    (params.row.transactionType === 'withdrawal' || params.row.transactionType === 'transfer_debit') ? params.row.servicefee : '---'
+                }
+            </div>
+
+        );
+    };
+
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
     const UserColumns = [
         {
             field: 'id',
@@ -119,7 +164,12 @@ export default function Transactions() {
             headerName: 'Service fee',
             width: 200,
             headerAlign: 'center',
+<<<<<<< HEAD
             align: 'center'
+=======
+            align: 'center',
+            renderCell: renderServiceFeeCell
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
         },
         {
             field: 'balance',
@@ -150,7 +200,11 @@ export default function Transactions() {
                             </h1>
                         </div>
                         <div className="w-full h-[90%]">
+<<<<<<< HEAD
                             <DataGrids columnsTest={UserColumns} rowsTest={userTransactions} descCol={`id`} colVisibility={{ id: false }} />
+=======
+                            <DataGrids columnsTest={UserColumns} rowsTest={usertransactions || []} descCol={`id`} colVisibility={{ id: false }} />
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                         </div>
                     </div>
                 </div>

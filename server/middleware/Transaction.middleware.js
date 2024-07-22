@@ -43,6 +43,10 @@ const TransactionMidlleware = {
     CheckAccountIfExist: async (req, res, next) => {
         try {
             const { debitAccount, creditAccount } = req.body
+<<<<<<< HEAD
+=======
+
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
             const debit = await AccountModel.findOne({ accountno: debitAccount })
             const credit = await AccountModel.findOne({ accountno: creditAccount })
 
@@ -52,6 +56,21 @@ const TransactionMidlleware = {
         } catch (error) {
             res.status(400).json({ error: `CreateTransactionCheckEmptyFields in transaction middleware error ${error}` });
         }
+<<<<<<< HEAD
+=======
+    },
+    CheckDepositAccountIfExist: async (req, res, next) => {
+        try {
+            const { account } = req.body
+
+            const credit = await AccountModel.findOne({ accountno: account })
+
+            if (!credit) return res.json({ success: false, message: 'Account does not exist!' })
+            next()
+        } catch (error) {
+            res.status(400).json({ error: `CreateTransactionCheckEmptyFields in transaction middleware error ${error}` });
+        }
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
     }
 }
 

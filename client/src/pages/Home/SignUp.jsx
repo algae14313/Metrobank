@@ -1,13 +1,23 @@
+<<<<<<< HEAD
 "use client"
+=======
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import LogoUB from '../../assets/mbLogo.png'
 import LoginBG from '../../assets/mbSignup.jpg'
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
+<<<<<<< HEAD
 import { Toaster } from "@/components/ui/toaster";
 import axios from 'axios'
 const { VITE_HOST, VITE_ADMIN_TOKEN } = import.meta.env
+=======
+import { fetchCredentials } from '@/api/Credentials'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { fetchSignUp } from '@/api/User'
+import Loading from '@/components/Loading'
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
 
 export default function SignUp() {
     const [values, setValues] = useState({
@@ -19,20 +29,69 @@ export default function SignUp() {
     const [confirmPassword, setConfirmPassword] = useState('')
     const navigate = useNavigate()
     const { toast } = useToast()
+<<<<<<< HEAD
+=======
+    const [confirmPassword, setConfirmPassword] = useState('')
+    const [values, setValues] = useState({
+        name: '',
+        email: '',
+        mobileno: '',
+        password: ''
+    })
+
+    const { data: credentials, isLoading: credentialsLoading } = useQuery({
+        queryFn: () => fetchCredentials(),
+        queryKey: ['signupCredentials']
+    })
+
+    const { mutateAsync: CreateUser, isPending: createUserLoading } = useMutation({
+        mutationFn: fetchSignUp,
+        onSuccess: (data) => {
+            if (data?.success) {
+                toast({ title: "Success!", description: data.message })
+                setValues((prev) => ({
+                    ...prev,
+                    email: '',
+                    password: '',
+                    name: '',
+                    mobileno: ''
+                }))
+                setConfirmPassword('')
+                return
+            }
+            toast({ title: "Uh oh! Something went wrong.", description: data.message })
+        }
+    })
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
 
     useEffect(() => {
-        fetchCredentials()
-    }, [])
+        if (!credentialsLoading && credentials) {
+            navigate('/')
+        }
+    }, [credentials, navigate])
 
-    const fetchCredentials = () => {
+
+    const handleSignUp = (e) => {
         try {
+<<<<<<< HEAD
             const credentials = sessionStorage.getItem('credentials')
             if (credentials) return navigate('/')
+=======
+            e.preventDefault()
+            const { name, email, mobileno, password } = values
+            const lowerCasedEmail = email.toLowerCase()
+
+            if (password === confirmPassword) return CreateUser({ name, email: lowerCasedEmail, mobileno, password })
+            toast({ title: "Uh oh! Something went wrong.", description: 'Password do not match!' });
+            setConfirmPassword('')
+
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
         } catch (error) {
             console.error(error)
         }
     }
 
+<<<<<<< HEAD
     const handleSignUp = async (e) => {
         try {
             e.preventDefault()
@@ -73,6 +132,8 @@ export default function SignUp() {
 
     }
 
+=======
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
     const handleLogin = () => {
         navigate('/login')
     }
@@ -92,13 +153,21 @@ export default function SignUp() {
 
     return (
         <>
+<<<<<<< HEAD
             <Toaster />
+=======
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
             <div className="bg-[#121212] w-full h-screen flex flex-col justify-start items-center">
                 <div className="w-full h-full flex justify-start items-center">
                     <div className="w-[70%] h-full flex justify-start items-center">
                         <img src={LoginBG} alt="BG" className='w-full h-full object-cover' />
                     </div>
+<<<<<<< HEAD
                     <div className="w-[30%] h-full flex justify-center items-center">
+=======
+                    <div className="relative w-[30%] h-full flex justify-center items-center">
+                        {createUserLoading && <Loading />}
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                         <form
                             onSubmit={handleSignUp}
                             className='w-full h-full flex flex-col justify-center items-center gap-[1rem] px-[4rem]'>

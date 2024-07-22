@@ -1,7 +1,13 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react'
+=======
+import { useEffect, useState } from 'react'
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
 import Sidebar from '../../../components/Sidebar'
 import Header__Dashboard from '../../../components/Header__dashboard'
 import { useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { fetchCredentials } from '@/api/Credentials'
 
 export default function AddCustomer() {
     const [values, setValues] = useState({
@@ -11,6 +17,17 @@ export default function AddCustomer() {
         mobileno: ''
     })
     const navigate = useNavigate()
+    const [values, setValues] = useState({
+        firstname: '',
+        lastname: '',
+        email: '',
+        mobileno: ''
+    })
+
+    const { data: credentials, isLoading: credentialsLoading } = useQuery({
+        queryFn: () => fetchCredentials(),
+        queryKey: ['credentialsAddCustomer']
+    })
 
     useEffect(() => {
         fetchCredentials()
@@ -43,6 +60,13 @@ export default function AddCustomer() {
         }))
     }
 
+<<<<<<< HEAD
+=======
+    useEffect(() => {
+        if (!credentialsLoading && !credentials) { navigate('/metrobank') }
+    }, [credentials, navigate])
+
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
     return (
         <>
             <div className="flex">

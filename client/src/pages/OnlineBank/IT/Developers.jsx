@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react'
+=======
+import { useEffect, useState } from 'react'
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
 import Sidebar from '../../../components/Sidebar';
 import Header__Dashboard from '../../../components/Header__dashboard';
 import DataGrids from '../../../components/DataGrids';
@@ -147,13 +151,13 @@ export default function Developers() {
 
     return (
         <>
-            <div className="flex">
+            <div className="flex bg-white dark:bg-[#242526]">
                 <Sidebar />
                 <div className="w-[80%] h-screen flex flex-col justify-start items-start p-[1rem] overflow-hidden">
                     <Header__Dashboard breadcrumbs={breadCrumbs} />
                     <div className="w-full h-[95%] flex flex-col gap-[1rem]">
                         <div className="flex justify-start items-center gap-[1rem]">
-                            <h1>
+                            <h1 className='text-black dark:text-white'>
                                 Search
                             </h1>
                             <input

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react'
+=======
+import { useEffect, useState } from 'react'
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
 import Sidebar from '../../../components/Sidebar'
 import Header__Dashboard from '../../../components/Header__dashboard';
 import DataGrids from '../../../components/DataGrids';
@@ -7,18 +11,34 @@ import Toggle from '../../../components/Toggle';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
+<<<<<<< HEAD
 import TabPanel from '@mui/lab/TabPanel';
 import { Button } from '@mui/material'
 import axios from 'axios'
+=======
+import TabPanel from '@mui/lab/TabPanel'
+import axios from 'axios'
+import { useQuery } from '@tanstack/react-query';
+import { fetchCredentials } from '@/api/Credentials';
+import { fetchRBUsers, SearchRBUsers } from '@/api/User';
+import { CustomerfetchRBAccounts, CustomersSearchRBAccounts } from '@/api/Accounts';
+import { Button } from '@/components/ui/button';
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
 
 const { VITE_HOST, VITE_ADMIN_TOKEN } = import.meta.env
 
 export default function Customers() {
     const [value, setValue] = useState('1');
+<<<<<<< HEAD
+=======
+    const [searchIdRbUser, setSearchIdRbUser] = useState('')
+    const [searchIdRbAccounts, setSearchIdRbAccounts] = useState('')
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
     const [details, setDetails] = useState([])
     const [accounts, setAccounts] = useState([])
     const navigate = useNavigate()
 
+<<<<<<< HEAD
     useEffect(() => {
         fetchCredentials()
         fetchRBUsers()
@@ -80,11 +100,59 @@ export default function Customers() {
                 isactive: user?.isactive
             }))
             setDetails(formattedData)
+=======
+    const { data: credentials, isLoading: credentialsLoading } = useQuery({
+        queryFn: () => fetchCredentials(),
+        queryKey: ['credentialsCustomers']
+    })
+
+    const { data: rbusers, isLoading: rbusersLoading, refetch: refetchRbUsers } = useQuery({
+        queryFn: () => fetchRBUsers(),
+        queryKey: ['rbusers']
+    })
+
+    const { data: searchrbusers, isLoading: searchrbusersLoading } = useQuery({
+        queryFn: () => SearchRBUsers(searchIdRbUser),
+        queryKey: ['searchRBUsers', searchIdRbUser],
+        enabled: !!searchIdRbUser,
+        staleTime: searchIdRbUser ? Infinity : 0
+    })
+
+
+
+    const { data: rbaccounts, isLoading: rbaccountsLoading, refetch: refetchRbAccounts } = useQuery({
+        queryFn: () => CustomerfetchRBAccounts(),
+        queryKey: ['customerFetchRbAccounts']
+    })
+
+    const { data: searchrbaccounts, isLoading: searchrbaccountsLoading } = useQuery({
+        queryFn: () => CustomersSearchRBAccounts(searchIdRbAccounts),
+        queryKey: ['CustomerSearchRBAccounts', searchIdRbAccounts],
+        enabled: !!searchIdRbAccounts,
+        staleTime: searchIdRbAccounts ? Infinity : 0
+    })
+
+    useEffect(() => {
+        if (!credentialsLoading && !credentials) { navigate('/metrobank') }
+        if (value === '1') {
+            refetchRbUsers();
+        } else {
+            refetchRbAccounts();
+        }
+    }, [credentials, value, navigate])
+
+    const handleOnChangeRBUsers = (e) => {
+        try {
+            const { value } = e.target
+            setSearchIdRbUser(value)
+            if (value === '') { refetchRbUsers() }
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
         } catch (error) {
             console.error(error)
         }
     }
 
+<<<<<<< HEAD
     const fethcRBAccounts = async () => {
         try {
 
@@ -133,6 +201,13 @@ export default function Customers() {
                 accountactive: acc?.isactive
             }))
             setAccounts(formattedData)
+=======
+    const handleOnChangeRBAccounts = (e) => {
+        try {
+            const { value } = e.target
+            setSearchIdRbAccounts(value)
+            if (value === '') { refetchRbAccounts() }
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
         } catch (error) {
             console.error(error)
         }
@@ -141,6 +216,7 @@ export default function Customers() {
     const handleChange = (event, newValue) => {
         try {
             setValue(newValue);
+<<<<<<< HEAD
         } catch (error) {
             console.error(error)
         } finally {
@@ -149,6 +225,17 @@ export default function Customers() {
             } else if (value === '2') {
                 fethcRBAccounts()
             }
+=======
+            if (newValue === '1') {
+                refetchRbUsers();
+                setSearchIdRbUser('');
+            } else {
+                refetchRbAccounts();
+                setSearchIdRbAccounts('');
+            }
+        } catch (error) {
+            console.error(error)
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
         }
     }
 
@@ -166,9 +253,12 @@ export default function Customers() {
             alert(res?.data?.message)
         } catch (error) {
             console.error(error)
+<<<<<<< HEAD
         } finally {
             fetchRBUsers()
             fethcRBAccounts()
+=======
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
         }
     }
 
@@ -241,7 +331,11 @@ export default function Customers() {
     const renderActionButtons = (params) => {
         return (
             <div className="w-full h-full flex justify-center items-center">
+<<<<<<< HEAD
                 <Button onClick={() => handleOpenAccount(params?.row?.uid)} className="flex justify-center items-center hover:scale-[.98] duration-300 ease">
+=======
+                <Button variant='secondary' onClick={() => handleOpenAccount(params?.row?.uid)} className="flex justify-center items-center hover:scale-[.98] duration-300 ease">
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                     <h1>Open Account</h1>
                 </Button>
             </div>
@@ -345,12 +439,16 @@ export default function Customers() {
 
     return (
         <>
-            <div className="flex">
+            <div className="flex bg-white dark:bg-[#242526]">
                 <Sidebar />
                 <div className="w-[100%] sm:w-[100%] md:w-[100%] lg:w-[80%] h-screen flex flex-col justify-start items-start p-[1rem] overflow-hidden">
                     <Header__Dashboard breadcrumbs={breadCrumbs} />
                     <div className="w-full h-[5%]">
+<<<<<<< HEAD
                         <h1 className='text-black font-[600] text-[1.2rem]'>
+=======
+                        <h1 className='text-black dark:text-white font-[600] text-[1.2rem]'>
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                             Manage
                         </h1>
                     </div>
@@ -365,7 +463,11 @@ export default function Customers() {
                         <TabPanel value="1" className='w-full h-[82%]'>
                             <div className="w-full h-[5%] flex justify-between items-center pt-[.5rem] pb-[2rem]">
                                 <div className="flex justify-start items-center gap-[1rem]">
+<<<<<<< HEAD
                                     <h1>
+=======
+                                    <h1 className='text-black dark:text-white'>
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                                         Search
                                     </h1>
                                     <input
@@ -378,20 +480,32 @@ export default function Customers() {
                                 <div className="w-full flex items-center justify-end gap-x-3">
                                     <Link
                                         to={`/customers/addcustomer`}
+<<<<<<< HEAD
                                         className="rounded-md bg-[#111111] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#333333] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+=======
+                                        className="rounded-md bg-[#4e4f50] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#333333] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                                     >
                                         Open Customer
                                     </Link>
                                 </div>
                             </div>
                             <div className="w-full h-[90%]">
+<<<<<<< HEAD
                                 <DataGrids columnsTest={CustomerColumns} rowsTest={details} descCol={`id`} />
+=======
+                                <DataGrids columnsTest={CustomerColumns} rowsTest={searchIdRbUser === '' ? rbusers || [] : searchrbusers || []} descCol={`id`} />
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                             </div>
                         </TabPanel>
                         <TabPanel value="2" className='w-full h-[82%]'>
                             <div className="w-full h-[5%] flex justify-between items-center pt-[.5rem] pb-[2rem]">
                                 <div className="flex justify-start items-center gap-[1rem]">
+<<<<<<< HEAD
                                     <h1>
+=======
+                                    <h1 className='text-black dark:text-white'>
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                                         Search
                                     </h1>
                                     <input
@@ -403,7 +517,11 @@ export default function Customers() {
                                 </div>
                             </div>
                             <div className="w-full h-[90%]">
+<<<<<<< HEAD
                                 <DataGrids columnsTest={AccountColumns} rowsTest={accounts} descCol={`accountno`} colVisibility={{ id: false }} />
+=======
+                                <DataGrids columnsTest={AccountColumns} rowsTest={searchIdRbAccounts === '' ? rbaccounts || [] : searchrbaccounts || []} descCol={`accountno`} colVisibility={{ id: false }} />
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                             </div>
                         </TabPanel>
                     </TabContext>

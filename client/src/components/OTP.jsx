@@ -1,9 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
 import axios from 'axios'
 const { VITE_HOST, VITE_ADMIN_TOKEN } = import.meta.env
+=======
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
 import {
     Form,
     FormControl,
@@ -18,8 +21,11 @@ import {
     InputOTPGroup,
     InputOTPSlot,
 } from "@/components/ui/input-otp";
+<<<<<<< HEAD
 import { toast } from "@/components/ui/use-toast";
 import { useEffect } from "react";
+=======
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
 
 const FormSchema = z.object({
     pin: z.string().min(6, {
@@ -27,13 +33,18 @@ const FormSchema = z.object({
     }),
 });
 
+<<<<<<< HEAD
 export function InputOTPForm({ isLoad, isVerify }) {
+=======
+export function InputOTPForm({ isVerify, pin }) {
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
     const form = useForm({
         resolver: zodResolver(FormSchema),
         defaultValues: {
             pin: "",
         },
     });
+<<<<<<< HEAD
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -77,6 +88,15 @@ export function InputOTPForm({ isLoad, isVerify }) {
             isLoad(false)
         }
 
+=======
+
+    async function onSubmit(data) {
+        try {
+            pin(data.pin)
+        } catch (error) {
+            console.error(error)
+        }
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
     }
 
     const handleCancel = () => {
@@ -85,7 +105,14 @@ export function InputOTPForm({ isLoad, isVerify }) {
 
     return (
         <Form {...form}>
+<<<<<<< HEAD
             <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+=======
+            <form onSubmit={(e) => {
+                e.preventDefault();
+                form.handleSubmit(onSubmit)(e);
+            }} className="w-2/3 space-y-6">
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                 <FormField
                     control={form.control}
                     name="pin"
@@ -112,7 +139,11 @@ export function InputOTPForm({ isLoad, isVerify }) {
                     )}
                 />
                 <div className="w-full flex justify-start items-center gap-[1rem]">
+<<<<<<< HEAD
                     <button onClick={handleCancel} className='text-white px-[1rem] py-[.6rem] border-[1px] border-white rounded-xl font-[500] text-[.8rem]  hover:bg-[#ffffff] hover:text-black'>
+=======
+                    <button type="button" onClick={handleCancel} className='text-white px-[1rem] py-[.6rem] border-[1px] border-white rounded-xl font-[500] text-[.8rem]  hover:bg-[#ffffff] hover:text-black'>
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                         Cancel
                     </button>
                     <button

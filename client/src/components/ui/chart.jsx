@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 "use client";
+=======
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 

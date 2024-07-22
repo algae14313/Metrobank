@@ -14,7 +14,11 @@ export default function HeaderDashboard({ breadcrumbs }) {
                                 {item?.title}
                             </Link>
                         ) : (
+<<<<<<< HEAD
                             <h1 key={i} className='font-[500] text-[.9rem] text-[#111111]'>
+=======
+                            <h1 key={i} className='font-[500] text-[.9rem] text-[#111111] dark:text-white'>
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                                 {item?.title}
                             </h1>
                         )

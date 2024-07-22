@@ -16,13 +16,21 @@ const buttonVariants = cva(
         outline:
           "border border-slate-200 bg-white shadow-sm hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:hover:text-slate-50",
         secondary:
+<<<<<<< HEAD
           "bg-slate-100 text-slate-900 shadow-sm hover:bg-slate-100/80 dark:bg-slate-800 dark:text-slate-50 dark:hover:bg-slate-800/80",
+=======
+          "bg-[#e0dede] text-[#000000] shadow-sm hover:bg-[#cfcfcf] hover:text-[#525151] dark:bg-[#4e4f50] dark:text-slate-50 dark:hover:bg-[#333333]",
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
         ghost: "hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50",
         link: "text-slate-900 underline-offset-4 hover:underline dark:text-slate-50",
       },
       size: {
         default: "h-9 px-4 py-2",
         sm: "h-8 rounded-md px-3 text-xs",
+<<<<<<< HEAD
+=======
+        md: "h-9 rounded-md  px-4 text-[.8rem]",
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
         lg: "h-10 rounded-md px-8",
         icon: "h-9 w-9",
       },

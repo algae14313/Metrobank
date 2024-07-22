@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Header__Dashboard from '../../../components/Header__dashboard'
 import Sidebar from '../../../components/Sidebar'
 import { useNavigate } from 'react-router-dom'
@@ -11,6 +11,19 @@ function classNames(...classes) {
 
 export default function AddEmployees() {
     const navigate = useNavigate()
+
+    useEffect(() => {
+        fetchCredentials()
+    }, [])
+
+    const fetchCredentials = () => {
+        try {
+            const credentials = sessionStorage.getItem('credentials')
+            if (!credentials) return navigate('/metrobank')
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -41,6 +54,7 @@ export default function AddEmployees() {
                                         </label>
                                         <div className="mt-2">
                                             <input
+                                                required
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
@@ -56,6 +70,7 @@ export default function AddEmployees() {
                                         </label>
                                         <div className="mt-2">
                                             <input
+                                                required
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
@@ -71,6 +86,7 @@ export default function AddEmployees() {
                                         </label>
                                         <div className="mt-2">
                                             <input
+                                                required
                                                 id="email"
                                                 name="email"
                                                 type="email"
@@ -85,6 +101,7 @@ export default function AddEmployees() {
                                         </label>
                                         <div className="mt-2">
                                             <input
+                                                required
                                                 id="mobileno"
                                                 name="mobileno"
                                                 type="text"

@@ -18,7 +18,11 @@ export default function UserStatement() {
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get('token');
 
+<<<<<<< HEAD
             const res = await axios.get(`${VITE_HOST}/api/metrobank/myaccount/transactions`, {
+=======
+            const res = await axios.get(`${VITE_HOST}/api/unionbank/myaccount/transactions`, {
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                 headers: {
                     Authorization: `Bearer ${VITE_ADMIN_TOKEN}`,
                     accountno: token
@@ -67,6 +71,20 @@ export default function UserStatement() {
         );
     };
 
+<<<<<<< HEAD
+=======
+    const renderServiceFeeCell = (params) => {
+        return (
+            <div className="w-full h-full flex justify-center items-center">
+                {
+                    (params.row.transactionType === 'withdrawal' || params.row.transactionType === 'transfer_debit') ? params.row.servicefee : '---'
+                }
+            </div>
+
+        );
+    };
+
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
     const UserColumns = [
         {
             field: 'id',
@@ -111,7 +129,12 @@ export default function UserStatement() {
             headerName: 'Service fee',
             width: 200,
             headerAlign: 'center',
+<<<<<<< HEAD
             align: 'center'
+=======
+            align: 'center',
+            renderCell: renderServiceFeeCell
+>>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
         },
         {
             field: 'balance',
