@@ -1,8 +1,8 @@
 "use client"
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import LogoUB from '../../assets/LogoUB.png'
-import LoginBG from '../../assets/LoginBG.png'
+import LogoUB from '../../assets/mbLogo.png'
+import LoginBG from '../../assets/mbSignup.jpg'
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
 import { Toaster } from "@/components/ui/toaster";

@@ -1,4 +1,4 @@
-import Logo from '../assets/LogoUB.png'
+import Logo from '../assets/mbLogo.png'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 const { VITE_HOST, VITE_ADMIN_TOKEN } = import.meta.env
