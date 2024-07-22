@@ -76,7 +76,7 @@ export default function Home() {
                     </h1>
                     <div className="w-full">
                         <h1 className='text-[#87878e] text-center'>
-                            Bring blockchain to the people. UnionBank supports experiences <br /> for power users, new consumers, and everyone in between.
+                            Bring blockchain to the people. Metrobank supports experiences <br /> for power users, new consumers, and everyone in between.
                         </h1>
                     </div>
                     <div className="w-full flex justify-center items-center gap-[1rem] z-[1]">
