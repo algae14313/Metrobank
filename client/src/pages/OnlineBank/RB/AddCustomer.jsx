@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React, { useEffect, useState } from 'react'
-=======
 import { useEffect, useState } from 'react'
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
 import Sidebar from '../../../components/Sidebar'
 import Header__Dashboard from '../../../components/Header__dashboard'
 import { useNavigate } from 'react-router-dom'
@@ -10,12 +6,6 @@ import { useQuery } from '@tanstack/react-query'
 import { fetchCredentials } from '@/api/Credentials'
 
 export default function AddCustomer() {
-    const [values, setValues] = useState({
-        firstname: '',
-        lastname: '',
-        email: '',
-        mobileno: ''
-    })
     const navigate = useNavigate()
     const [values, setValues] = useState({
         firstname: '',
@@ -28,19 +18,6 @@ export default function AddCustomer() {
         queryFn: () => fetchCredentials(),
         queryKey: ['credentialsAddCustomer']
     })
-
-    useEffect(() => {
-        fetchCredentials()
-    }, [])
-
-    const fetchCredentials = () => {
-        try {
-            const credentials = sessionStorage.getItem('credentials')
-            if (!credentials) return navigate('/metrobank')
-        } catch (error) {
-            console.error(error)
-        }
-    }
 
     const handleNext = () => {
         sessionStorage.setItem('customerdetails', JSON.stringify(values))
@@ -60,13 +37,10 @@ export default function AddCustomer() {
         }))
     }
 
-<<<<<<< HEAD
-=======
     useEffect(() => {
         if (!credentialsLoading && !credentials) { navigate('/metrobank') }
     }, [credentials, navigate])
 
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
     return (
         <>
             <div className="flex">

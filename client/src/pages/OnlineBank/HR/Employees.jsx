@@ -1,19 +1,11 @@
-<<<<<<< HEAD
-import React, { useEffect, useState } from 'react'
-import { Button } from '@mui/material'
-=======
 import { useEffect, useState } from 'react'
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
 import Header__Dashboard from '../../../components/Header__dashboard'
 import Sidebar from '../../../components/Sidebar'
 import DataGrids from '../../../components/DataGrids';
 import { Link, useNavigate } from 'react-router-dom';
 import Toggle from '../../../components/Toggle';
 import axios from 'axios'
-<<<<<<< HEAD
-=======
 import { Button } from '@/components/ui/button';
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
 
 const { VITE_HOST, VITE_ADMIN_TOKEN } = import.meta.env
 
@@ -120,11 +112,7 @@ export default function Employees() {
     const renderActionButtons = (params) => {
         return (
             <div className="w-full h-full flex justify-center items-center">
-<<<<<<< HEAD
-                <Button variant="text" onClick={() => handleOnClickEdit(params.row.uid)}>
-=======
                 <Button variant="secondary" onClick={() => handleOnClickEdit(params.row.uid)}>
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                     <h1>Edit</h1>
                 </Button>
             </div>
@@ -193,11 +181,7 @@ export default function Employees() {
                             <div className="w-full flex items-center justify-end gap-x-6">
                                 <Link
                                     to={`/employees/manageemployee`}
-<<<<<<< HEAD
-                                    className="rounded-md bg-[#111111] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#333333] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-=======
                                     className="rounded-md bg-[#111111] dark:bg-[#4e4f50] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#333333] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                                 >
                                     Add Employee
                                 </Link>

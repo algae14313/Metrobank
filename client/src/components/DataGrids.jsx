@@ -1,15 +1,8 @@
-<<<<<<< HEAD
-import React from 'react'
-import { DataGrid, gridClasses } from '@mui/x-data-grid'
-
-export default function DataGrids({ columnsTest, rowsTest, descCol, colVisibility }) {
-=======
 import { DataGrid, gridClasses } from '@mui/x-data-grid'
 import './css/DataGrids.css'
 
 export default function DataGrids({ columnsTest, rowsTest, descCol, colVisibility }) {
 
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
     return (
         <DataGrid
             rows={rowsTest}
@@ -26,12 +19,6 @@ export default function DataGrids({ columnsTest, rowsTest, descCol, colVisibilit
             }}
             getRowHeight={() => 'auto'}
             sx={{
-<<<<<<< HEAD
-                [`& .${gridClasses.cell}`]: {
-                  py: 2,
-                },
-              }}
-=======
                 '& .MuiDataGrid-cell': {
                     borderColor: 'inherit',
                 },
@@ -50,7 +37,6 @@ export default function DataGrids({ columnsTest, rowsTest, descCol, colVisibilit
                 },
             }}
             className="data-grid"
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
             columnVisibilityModel={colVisibility}
             pageSizeOptions={[5, 10, 25]}
             disableRowSelectionOnClick

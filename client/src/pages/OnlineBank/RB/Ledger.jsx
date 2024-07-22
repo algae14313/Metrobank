@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React, { useEffect, useState } from 'react'
-=======
 import { useEffect, useState } from 'react'
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
 import { useNavigate, useParams } from 'react-router-dom'
 import Sidebar from '../../../components/Sidebar'
 import Header__Dashboard from '../../../components/Header__dashboard'
@@ -92,16 +88,10 @@ export default function Ledger() {
 
     const renderDebitCell = (params) => {
         return (
-<<<<<<< HEAD
-            <div className="w-full h-full flex justify-center items-start">
-                {
-                    (params.row.transactionType === 'withdrawal' || params.row.transactionType === 'transfer_debit') ? params.row.debit : '---'
-=======
             <div className="w-full h-full flex justify-center items-center">
                 {
                     (params.row.transactionType === 'withdrawal' || params.row.transactionType === 'transfer_debit') ? params.row.credit : '---'
 
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                 }
             </div>
 
@@ -110,11 +100,6 @@ export default function Ledger() {
 
     const renderCreditCell = (params) => {
         return (
-<<<<<<< HEAD
-            <div className="w-full h-full flex justify-center items-start">
-                {
-                    (params.row.transactionType === 'deposit' || params.row.transactionType === 'transfer_credit') ? params.row.credit : '---'
-=======
             <div className="w-full h-full flex justify-center items-center">
                 {
                     (params.row.transactionType === 'deposit' || params.row.transactionType === 'transfer_credit') ? params.row.debit : '---'
@@ -129,7 +114,6 @@ export default function Ledger() {
             <div className="w-full h-full flex justify-center items-center">
                 {
                     (params.row.transactionType === 'withdrawal' || params.row.transactionType === 'transfer_debit') ? params.row.servicefee : '---'
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                 }
             </div>
 
@@ -180,12 +164,8 @@ export default function Ledger() {
             headerName: 'Service fee',
             width: 150,
             headerAlign: 'center',
-<<<<<<< HEAD
-            align: 'center'
-=======
             align: 'center',
             renderCell: renderServiceFeeCell
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
         },
         {
             field: 'balance',

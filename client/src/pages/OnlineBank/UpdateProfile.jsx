@@ -1,20 +1,8 @@
-<<<<<<< HEAD
-import React, { useEffect, useState } from 'react'
-=======
 import { useEffect, useState } from 'react'
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
 import { useNavigate } from 'react-router-dom'
 import Sidebar from '../../components/Sidebar'
 import Header__Dashboard from '../../components/Header__dashboard'
 import Toggle from '../../components/Toggle'
-<<<<<<< HEAD
-import axios from 'axios'
-
-const { VITE_HOST, VITE_ADMIN_TOKEN } = import.meta.env
-
-export default function UpdateAccount() {
-    const [userRole, setUserRole] = useState('')
-=======
 import { useToast } from "@/components/ui/use-toast"
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { fetchProfileDetails, UpdateProfileUser } from '@/api/User'
@@ -27,65 +15,12 @@ export default function UpdateAccount() {
     const navigate = useNavigate()
     const { toast } = useToast()
     const [isDialog, setDialog] = useState(false)
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
     const [values, setValues] = useState({
         name: '',
         email: '',
         mobileno: '',
         role: ''
     })
-<<<<<<< HEAD
-    const navigate = useNavigate()
-
-    useEffect(() => {
-        fetchCredentials()
-    }, [])
-
-    const fetchCredentials = async () => {
-        try {
-            const credentials = sessionStorage.getItem('credentials')
-            if (!credentials) return navigate('/metrobank')
-
-            const { userId } = JSON.parse(credentials)
-            const res = await axios.get(`${VITE_HOST}/api/users/${userId}`, {
-                headers: {
-                    Authorization: `Bearer ${VITE_ADMIN_TOKEN}`
-                }
-            })
-
-            const name = res?.data?.data?.name
-            const mobileno = res?.data?.data?.mobileno
-            const email = res?.data?.data?.email
-            const isRole = res?.data?.data?.role
-
-            setValues((prev) => ({
-                ...prev,
-                name: name,
-                email: email,
-                mobileno: mobileno,
-                role: isRole
-            }))
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        const credentials = sessionStorage.getItem('credentials')
-        const { userId } = JSON.parse(credentials)
-        const res = await axios.post(`${VITE_HOST}/api/updateuser/${userId}`, values, {
-            headers: {
-                Authorization: `Bearer ${VITE_ADMIN_TOKEN}`
-            }
-        })
-
-        if (res?.data?.success) {
-            alert(`${res?.data?.message}, please login again!`)
-            sessionStorage.clear()
-            location.reload()
-        }
-=======
 
     const { data: credentials, isLoading: credentialsLoading } = useQuery({
         queryFn: () => fetchCredentials(),
@@ -135,7 +70,6 @@ export default function UpdateAccount() {
 
     const handleDialogCancel = () => {
         setDialog(false)
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
     }
 
     const handleCancel = () => {
@@ -165,12 +99,6 @@ export default function UpdateAccount() {
         }))
     }
 
-<<<<<<< HEAD
-    return (
-        <>
-            <div className="flex">
-                <Sidebar />
-=======
     useEffect(() => {
         if (!credentialsLoading && !credentials) { navigate('/metrobank') }
         if (!profiledetailsLoading && profileDetails) {
@@ -190,7 +118,6 @@ export default function UpdateAccount() {
                 <Sidebar />
                 <AlertDialogs open={isDialog} onClose={handleDialogCancel} onConfirm={handleSubmit} content={`This action cannot be undone. This will update your Metrobank profile.`} />
                 {(profiledetailsLoading || updateLoading) && <Loading />}
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                 <div className="w-[80%] h-screen flex flex-col justify-start items-center p-[1rem] overflow-auto ">
                     <Header__Dashboard breadcrumbs={breadCrumbs} />
                     <form
@@ -198,21 +125,12 @@ export default function UpdateAccount() {
                         className='w-full h-[95%] flex flex-col justify-start items-center px-[5rem]'>
                         <div className="space-y-12 pt-[5rem] pb-[20rem]">
                             <div className="border-b border-gray-900/10 pb-12">
-<<<<<<< HEAD
-                                <h2 className="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
-                                <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
-
-                                <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-8">
-                                    <div className="sm:col-span-4">
-                                        <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
-=======
                                 <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">Personal Information</h2>
                                 <p className="mt-1 text-sm leading-6 text-gray-600 dark:text-[#8f8f96]">Use a permanent address where you can receive mail.</p>
 
                                 <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-8">
                                     <div className="sm:col-span-4">
                                         <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900 dark:text-white">
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                                             Full Name
                                         </label>
                                         <div className="mt-2">
@@ -231,11 +149,7 @@ export default function UpdateAccount() {
                                 </div>
                                 <div className='mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-3'>
                                     <div className="sm:col-span-2">
-<<<<<<< HEAD
-                                        <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-=======
                                         <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900 dark:text-white">
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                                             Email address
                                         </label>
                                         <div className="mt-2">
@@ -252,11 +166,7 @@ export default function UpdateAccount() {
                                         </div>
                                     </div>
                                     <div className="sm:col-span-1">
-<<<<<<< HEAD
-                                        <label htmlFor="mobileno" className="block text-sm font-medium leading-6 text-gray-900">
-=======
                                         <label htmlFor="mobileno" className="block text-sm font-medium leading-6 text-gray-900 dark:text-white">
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                                             Mobile No.
                                         </label>
                                         <div className="mt-2">
@@ -321,11 +231,7 @@ export default function UpdateAccount() {
                                         <div className='mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-3'>
                                             <div className="sm:col-span-1">
                                                 <div className="sm:col-span-3 flex justify-between items-center">
-<<<<<<< HEAD
-                                                    <div className="block text-sm font-medium leading-6 text-gray-900">
-=======
                                                     <div className="block text-sm font-medium leading-6 text-gray-900 dark:text-white">
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                                                         Developer
                                                     </div>
                                                     <Toggle
@@ -342,24 +248,12 @@ export default function UpdateAccount() {
                             <div className="w-full flex items-center justify-end gap-x-6">
                                 <button
                                     onClick={handleCancel}
-<<<<<<< HEAD
-                                    className="text-sm font-semibold leading-6 text-gray-900">
-                                    Cancel
-                                </button>
-                                <button
-                                    type='submit'
-                                    className="rounded-md bg-[#111111] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#333333] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                >
-                                    Submit
-                                </button>
-=======
                                     className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
                                     Cancel
                                 </button>
                                 <Button variant='secondary' onClick={handleChangeDialog}>
                                     Submit
                                 </Button>
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                             </div>
                         </div>
                     </form>

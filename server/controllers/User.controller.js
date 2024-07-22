@@ -11,11 +11,7 @@ const UserController = {
     CreateUser: async (req, res) => {
         try {
             const { name, email, mobileno, password, role, rbid } = req.body
-<<<<<<< HEAD
-
-=======
             
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
             const data = await UserModel.create({ name, email, mobileno, password, role })
 
             if (rbid !== undefined) {
@@ -292,11 +288,7 @@ const UserController = {
                 description: description
             });
 
-<<<<<<< HEAD
-            res.json({ success: true, message: 'User updated successfully!', data })
-=======
             res.json({ success: true, message: 'User updated successfully', data })
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
         } catch (error) {
             res.json({ error: `UpdateUser in user controller error ${error}` });
         }

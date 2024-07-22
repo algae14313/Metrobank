@@ -8,11 +8,7 @@ export default function Header__Home() {
     const handleClick = async () => {
         try {
             const sampleAccountNo = '000000005'
-<<<<<<< HEAD
-            const res = await axios.get(`${VITE_HOST}/api/metrobank/myaccount/auth/${sampleAccountNo}`, {
-=======
             const res = await axios.get(`${VITE_HOST}/api/unionbank/myaccount/auth/${sampleAccountNo}`, {
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                 headers: {
                     Authorization: `Bearer ${VITE_ADMIN_TOKEN}`
                 }

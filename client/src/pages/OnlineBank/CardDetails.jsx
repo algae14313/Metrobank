@@ -1,52 +1,3 @@
-<<<<<<< HEAD
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import Sidebar from '../../components/Sidebar'
-import Header__Dashboard from '../../components/Header__dashboard'
-import axios from 'axios'
-
-const { VITE_HOST, VITE_ADMIN_TOKEN } = import.meta.env
-
-export default function AccountStatement() {
-    const [carddetails, setCardDetails] = useState({
-        accountType: '',
-        accountno: '',
-        balance: ''
-    })
-    const navigate = useNavigate()
-
-    useEffect(() => {
-        fetchCredentials()
-    }, [])
-
-    const fetchCredentials = async () => {
-        try {
-            const credentials = sessionStorage.getItem('credentials')
-            if (!credentials) return navigate('/metrobank')
-            const { userId } = JSON.parse(credentials)
-
-            const res = await axios.get(`${VITE_HOST}/api/useraccount/${userId}`, {
-                headers: {
-                    Authorization: `Bearer ${VITE_ADMIN_TOKEN}`
-                }
-            })
-
-            const type = res?.data?.data?.accountType
-            const accountno = res?.data?.data?.accountno
-            const balance = res?.data?.data?.balance
-
-            setCardDetails((prev) => ({
-                ...prev,
-                accountType: type,
-                accountno: accountno,
-                balance: balance
-            }))
-
-        } catch (error) {
-            console.error(error)
-        }
-    }
-=======
 import  { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from '../../components/Sidebar'
@@ -73,7 +24,6 @@ export default function AccountStatement() {
     useEffect(() => {
         if (!credentials && !credentialsLoading) { navigate('/metrobank') }
     }, [credentials, navigate])
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
 
     const handleGoBack = () => {
         navigate('/')
@@ -94,31 +44,19 @@ export default function AccountStatement() {
                                 <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                     <dt className="text-sm font-medium leading-6 text-gray-900">Account Type</dt>
                                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-<<<<<<< HEAD
-                                        {carddetails?.accountType === 'savings' && 'Regular Savings'}
-=======
                                         {accounts?.accountType === 'savings' && 'Regular Savings'}
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                                     </dd>
                                 </div>
                                 <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                     <dt className="text-sm font-medium leading-6 text-gray-900">Account Number</dt>
                                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-<<<<<<< HEAD
-                                        {carddetails?.accountno}
-=======
                                         {accounts?.accountno}
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                                     </dd>
                                 </div>
                                 <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                     <dt className="text-sm font-medium leading-6 text-gray-900">Current Balance</dt>
                                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-<<<<<<< HEAD
-                                        PHP {carddetails?.balance}
-=======
                                         PHP {accounts?.balance}
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                                     </dd>
                                 </div>
                                 <div className="w-full flex items-center justify-end gap-x-6 pt-[2rem]">

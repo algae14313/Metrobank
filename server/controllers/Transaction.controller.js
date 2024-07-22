@@ -34,11 +34,7 @@ const TransactionController = {
 
             res.json({ success: true, message: 'Deposit transaction successfully!', balance: currentBalance })
         } catch (error) {
-<<<<<<< HEAD
-            res.json({ error: `DepositTransaction in transaction controller error ${error}` });
-=======
             res.json({ success: false, message: 'DepositTransaction in transaction controller error', error })
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
         }
     },
     WithdrawTransaction: async (req, res) => {
@@ -79,11 +75,7 @@ const TransactionController = {
 
             res.json({ success: true, message: 'Withdrawal transaction successfully!' })
         } catch (error) {
-<<<<<<< HEAD
-            res.json({ error: `WithdrawTransaction in transaction controller error ${error}` });
-=======
             res.json({ success: false, message: 'WithdrawTransaction in transaction controller error', error })
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
         }
     },
     TransferTransaction: async (req, res) => {
@@ -103,11 +95,7 @@ const TransactionController = {
 
             if (debitAccount === creditAccount) {
                 const taxAmount = 0
-<<<<<<< HEAD
-                
-=======
 
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
                 if (taxAmount === debitBalance) return res.json({ success: false, message: 'Insufficient Balance!', balance: debitBalance, taxPayable: tax, debitAmount: transferAmount, total: taxAmount })
 
                 const debitFutureBalance = debitBalance - taxAmount
@@ -133,11 +121,7 @@ const TransactionController = {
                     description: `${creditAccount} credited an amount of ${transferAmount} The balance changed from ${creditBalance} to ${debitFutureBalance}`
                 })
 
-<<<<<<< HEAD
-                return res.json({ success: true, message: 'Transfer transaction successfully!', balance: debitFutureBalance })
-=======
                 return res.json({ success: true, message: 'Transfer transaction successfully!', reference: debitTransactionId })
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
             }
 
             const taxAmount = transferAmount + tax
@@ -170,15 +154,9 @@ const TransactionController = {
                 description: `${creditAccount} credited an amount of ${transferAmount} The balance changed from ${creditBalance} to ${creditFutureBalance}`
             })
 
-<<<<<<< HEAD
-            res.json({ success: true, message: 'Transfer transaction successfully!', balance: debitFutureBalance })
-        } catch (error) {
-            res.json({ error: `TransferTransaction in transaction controller error ${error}` });
-=======
             res.json({ success: true, message: 'Transfer transaction successfully!', reference: debitTransactionId })
         } catch (error) {
             res.json({ success: false, message: 'TransferTransaction in transaction controller error', error })
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
         }
     },
     GetAllTransaction: async (req, res) => {
@@ -193,23 +171,16 @@ const TransactionController = {
 
             res.json({ success: true, message: 'Fetch transactions successfully!', data: formattedData })
         } catch (error) {
-<<<<<<< HEAD
-            res.json({ error: `GetAllTransaction in transaction controller error ${error}` });
-=======
             res.json({ success: false, message: 'GetAllTransaction in transaction controller error', error });
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
         }
     },
     GetAllUserTransaction: async (req, res) => {
         try {
             const { userId } = req.params
             const { _id: accountId } = await AccountModel.findOne({ userId: userId })
-<<<<<<< HEAD
-=======
 
             if (accountId === null) return res.json({ success: false, message: 'No Account' })
 
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
             const data = await TransactionModel.find({ account: accountId })
 
             const formattedData = data.map(transaction => {
@@ -229,11 +200,7 @@ const TransactionController = {
 
             res.json({ success: true, message: 'Fetch transactions successfully!', data: formattedData })
         } catch (error) {
-<<<<<<< HEAD
-            res.json({ error: `GetAllTransaction in transaction controller error ${error}` });
-=======
             res.json({ success: false, message: 'GetAllUserTransaction in transaction controller error', error });
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
         }
     },
     SearchTransaction: async (req, res) => {
@@ -251,11 +218,7 @@ const TransactionController = {
 
             res.json({ success: true, message: 'Fethced certain account successfully!', data: [{ _id, amount, description, createdAt: formattedCreatedAt, transactionType, balance, fee }] })
         } catch (error) {
-<<<<<<< HEAD
-            res.json({ error: `SearchTransactions in transaction controller error ${error}` });
-=======
             res.json({ success: false, message: 'SearchTransaction in transaction controller error', error })
->>>>>>> ed0f313f6802d2fa1f1e59da9eebb3ead8992eab
         }
     }
 }
