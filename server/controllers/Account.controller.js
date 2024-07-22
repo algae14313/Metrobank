@@ -54,6 +54,11 @@ const AccountController = {
            
             res.json({ success: true, message: 'Fetch accounts successfully!', data: { _id, userId, accountno, accountType, balance: formattedBalance, isactive } });
 
+<<<<<<< HEAD
+=======
+            res.json({ success: true, message: 'Fetch accounts successfully!', data: { _id, userId, accountno, accountType, balance: formattedBalance, isactive } });
+
+>>>>>>> 5e3010578ff8f97f848176b4e9353934d9defc22
             // res.json({ success: true, message: 'Fetch accounts successfully!', data: { _id, userId, accountno, accountType, balance: formattedBalance, isactive } })
         } catch (error) {
             res.json({ error: `GetUserAccount in account controller error ${error}` });

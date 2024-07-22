@@ -44,6 +44,12 @@ const Email = async ({ email, userId }) => {
         console.error(error)
     }
 }
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 5e3010578ff8f97f848176b4e9353934d9defc22
 
 const UserMidlleware = {
     CheckUserTokenValid: async (req, res, next) => {
@@ -120,7 +126,11 @@ const UserMidlleware = {
         try {
             const { email } = req.body
             const user = await UserModel.findOne({ email: email })
+<<<<<<< HEAD
 
+=======
+            console.log(user?.isactive)
+>>>>>>> 5e3010578ff8f97f848176b4e9353934d9defc22
             if (user?.isactive) {
                 const token = jwt.sign({ userId: user._id }, process.env.SECRET_TOKEN, { expiresIn: '1d' })
                 Log({ userId: user?._id, action: 'read', collectionName: 'User', documentId: user?._id, description: `${email} attempted to login` })
