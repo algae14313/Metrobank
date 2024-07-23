@@ -40,7 +40,7 @@ export default function Sidebar() {
 
     const handleLogout = () => {
         sessionStorage.clear();
-        navigate('/unionbank')
+        navigate('/metrobank')
     };
 
     return (
