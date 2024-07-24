@@ -92,22 +92,22 @@ export default function Home() {
     );
 }
 
-// RotatingBanner component with Swiper
+
 const RotatingBanner = () => {
     return (
         <Swiper
-            modules={[Autoplay, Pagination, Navigation]} // Add necessary modules
+            modules={[Autoplay, Pagination, Navigation]} 
             spaceBetween={30}
             centeredSlides={true}
             autoplay={{
-                delay: 2500, // Set delay to 2.5 seconds
-                disableOnInteraction: false, // Continue autoplay after interactions
+                delay: 2500,
+                disableOnInteraction: false,
             }}
             pagination={{
-                clickable: true, // Make pagination dots clickable
-                dynamicBullets: true, // Dynamic pagination bullets
+                clickable: true,
+                dynamicBullets: true,
             }}
-            navigation={true} // Enable navigation arrows
+            navigation={true}
             className='w-full h-64'
         >
             <SwiperSlide>
