@@ -45,7 +45,7 @@ export default function Sidebar() {
 
     return (
         <>
-            <div className="sm:w-[none] md:w-[none] lg:w-[20%] h-screen px-[.1rem] sm:px-[.3rem] md:px-[.5rem] lg:px-[1rem] py-[1rem] bg-[#ffffff] dark:bg-[#171717] border-r border-gray-900/10 overflow-auto">
+            <div className="sm:w-[none] md:w-[none] lg:w-[20%] h-screen px-[.1rem] sm:px-[.3rem] md:px-[.5rem] lg:px-[1rem] py-[1rem] bg-[#ffffff] dark:bg-[#171717] border-r border-gray-900/10 overflow-auto flex flex-col justify-between">
                 {
                     carddetails && (
                         <div className="rounded-xl shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1)] bg-[#111111] w-full min-h-[8rem] flex justify-center items-start flex-col px-[1rem] gap-[.5rem]">
@@ -64,22 +64,24 @@ export default function Sidebar() {
                     )
                 }
 
-                <div className="w-full flex flex-col justify-between items-start pb-[6rem]">
-                    <div className="w-full flex flex-col">
+                <div className="w-full flex flex-col justify-between items-start flex-grow">
+                    <div className="w-full flex flex-col flex-grow">
+                        <br />
+                        <br />
                         <div className="hnavs w-full py-[1rem] flex flex-col gap-[.2rem] justify-start items-start">
                             <NavLink to={`/`} className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
-                                <GridViewIcon />
+                                {/* <GridViewIcon /> */}
                                 Dashboard
                             </NavLink>
                             {
                                 (role === 'user' || role === 'developer') && (
                                     <>
                                         <NavLink to='/statement' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
-                                            <ReceiptLongOutlinedIcon />
+                                            {/* <ReceiptLongOutlinedIcon /> */}
                                             View Statement
                                         </NavLink>
                                         <NavLink to='/transfer' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
-                                            <MoveDownOutlinedIcon />
+                                            {/* <MoveDownOutlinedIcon /> */}
                                             Make a transfer
                                         </NavLink>
                                     </>
@@ -89,7 +91,7 @@ export default function Sidebar() {
                             {
                                 (role === 'it' || role === 'admin') && (
                                     <NavLink to='/developers' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
-                                        <CodeOutlinedIcon />
+                                        {/* <CodeOutlinedIcon /> */}
                                         Developers
                                     </NavLink>
                                 )
@@ -97,7 +99,7 @@ export default function Sidebar() {
                             {
                                 (role === 'hr' || role === 'admin') && (
                                     <NavLink to='/employees' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
-                                        <SupervisorAccountOutlinedIcon />
+                                        {/* <SupervisorAccountOutlinedIcon /> */}
                                         Employees
                                     </NavLink>
                                 )
@@ -106,32 +108,34 @@ export default function Sidebar() {
                                 (role === 'rb' || role === 'admin') && (
                                     <>
                                         <NavLink to='/ledger' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
-                                            <SyncAltOutlinedIcon />
+                                            {/* <SyncAltOutlinedIcon /> */}
                                             Ledger
                                         </NavLink>
                                         <NavLink to='/customers' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
-                                            <AccessibilityOutlinedIcon />
+                                            {/* <AccessibilityOutlinedIcon /> */}
                                             Manage Customers
                                         </NavLink>
                                     </>
                                 )
                             }
                         </div>
+                        <br />
+                        <br />
                         <h1 className='hidden sm:hidden md:hidden lg:block text-[#9CA3AF] text-[.3rem] sm:text-[.5rem] md:text-[.7rem] lg:text-[.9rem]'>Settings</h1>
-                        <div className="hnavs w-full py-[1rem] flex flex-col justify-start items-start gap-[.2rem]">
+                        <div className="hnavs w-full py-[1rem] flex flex-col justify-start items-start gap-[.2rem] flex-grow">
                             <NavLink to='/profile' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
-                                <Person2OutlinedIcon />
+                                {/* <Person2OutlinedIcon /> */}
                                 Profile
                             </NavLink>
                             {
                                 (role === 'it' || role === 'admin') && (
                                     <>
                                         <NavLink to='/auditlog' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
-                                            <BookOutlinedIcon />
+                                            {/* <BookOutlinedIcon /> */}
                                             Audit Log
                                         </NavLink>
                                         <NavLink to='/security' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
-                                            <GppGoodOutlinedIcon />
+                                            {/* <GppGoodOutlinedIcon /> */}
                                             Security
                                         </NavLink>
                                     </>
@@ -140,22 +144,24 @@ export default function Sidebar() {
                             {
                                 (role === 'developer' || role === 'admin') && (
                                     <NavLink to='/apikeys' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
-                                        <HttpOutlinedIcon />
+                                        {/* <HttpOutlinedIcon /> */}
                                         API Keys
                                     </NavLink>
                                 )
                             }
                         </div>
                     </div>
-                    <div onClick={handleLogout} className="w-full flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1] cursor-pointer hover:bg-[#323232] duration-300 ease">
-                        <ExitToAppOutlinedIcon style={{color: 'white'}} />
-                        <button className='hidden sm:hidden md:hidden lg:block text-[#ffffff] text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem]'>
-                            Logout
-                        </button>
+                    {/* Moved Logout Button to a Separate Div */}
+                    <div className="w-full flex justify-center items-center mt-auto">
+                        <div onClick={handleLogout} className="w-full flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1] cursor-pointer hover:bg-[#323232] duration-300 ease">
+                            {/* <ExitToAppOutlinedIcon style={{color: 'white'}} /> */}
+                            <button className='hidden sm:hidden md:hidden lg:block text-[#ffffff] text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem]'>
+                                Logout
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </>
-
     )
 }

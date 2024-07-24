@@ -8,7 +8,7 @@ export default defineConfig({
     server: {
         // host: '192.168.10.15',
         // port: '80'
-        host: 'localhost',
+        host: '192.168.1.34',
         port: '80'
     },
     resolve: {
