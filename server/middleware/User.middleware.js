@@ -17,7 +17,7 @@ const Email = async ({ email, userId }) => {
             port: 465,
             secure: true, // Use `true` for port 465, `false` for all other ports
             auth: {
-                user: 'yourparengedison@gmail.com',
+                user: 'bonoir80@gmail.com',
                 pass: process.env.EmailPassword
             },
         });
@@ -34,9 +34,10 @@ const Email = async ({ email, userId }) => {
         await transporter.sendMail({
             from: `"Metrobank 👻" <bonoir80@gmail.com>`,
             to: email,
-            subject: "Your Metrobank Verification Code",
+            subject: "Your (pseudo)Metrobank Verification Code",
             html: `
-                    <h3>Please do not share your one-time-password.<h3/> <br />
+                    <h3>This is for TESTING!!! <br/>
+                    Please do not share your one-time-password.<h3/> <br />
                     <h1>${otp}<h1/>
                     `
         });
