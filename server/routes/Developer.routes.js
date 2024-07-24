@@ -13,13 +13,13 @@ router.post('/createdevelopertoken/:userId',
     DeveloperController.CreateDeveloperToken
 )
 
-router.get('/unionbank/account/:accountno',
+router.get('/metrobank/account/:accountno',
     DeveloperMiddleware.CheckDeveloperTokenValid,
     TransactionMiddleware.CreateTransactionCheckEmptyFields,
     DeveloperController.GetRequestAccountNo
 )
 
-router.post('/unionbank/transfertransaction',
+router.post('/metrobank/transfertransaction',
     DeveloperMiddleware.CheckDeveloperTokenValid,
     TransactionMiddleware.CheckAccountIfExist,
     TransactionMiddleware.CreateTransactionCheckEmptyFields,
@@ -36,12 +36,12 @@ router.post('/deletetoken/:developerId',
     DeveloperController.DeleteToken
 )
 
-router.get('/unionbank/myaccount/auth/:accountno',
+router.get('/metrobank/myaccount/auth/:accountno',
     DeveloperMiddleware.CheckDeveloperTokenValid,
     DeveloperController.GenerateUrl
 )
 
-router.get('/unionbank/myaccount/transactions',
+router.get('/metrobank/myaccount/transactions',
     DeveloperMiddleware.CheckDeveloperTokenValid,
     DeveloperMiddleware.CheckUserTokenValid,
     DeveloperController.GetAllUserTransaction
