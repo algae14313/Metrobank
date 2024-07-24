@@ -27,19 +27,19 @@ export default function Header__Home() {
                     <Link to={`/`} className="w-[12rem] h-full">
                         <img src={Logo} alt="Logo" className='w-full h-full object-contain' />
                     </Link>
-                    <Link to={`https://sdevmarc.notion.site/UnionBank-Terms-and-Conditions-85dd31ebb2c34869a3dc59cfc845ec6f`} target='_blank' className='text-[#7ba1bf] font-[500] text-[.9rem] hover:text-white duration-300 ease'>
+                    {/* <Link to={`https://sdevmarc.notion.site/UnionBank-Terms-and-Conditions-85dd31ebb2c34869a3dc59cfc845ec6f`} target='_blank' className='text-[#7ba1bf] font-[500] text-[.9rem] hover:text-white duration-300 ease'>
                         Terms of Use
                     </Link>
                     <Link to={`https://www.notion.so/sdevmarc/UnionBank-Privacy-Policy-565f098c06044eb4a84baeda6ad5364e`} target='_blank' className='text-[#7ba1bf] font-[500] text-[.9rem] hover:text-white duration-300 ease'>
                         Privacy Policy
-                    </Link>
+                    </Link> */}
                 </div>
 
                 <div className=" h-full flex justify-end items-center gap-[.7rem] sm:gap-[1rem] md:gap-[1.5rem] lg:gap-[.8rem]">
-                    <Link to={`/signup`} className='text-white px-[1rem] py-[.6rem] bg-[#1daeef] rounded-xl font-[600] text-[.8rem] hover:bg-[#58caff]'>
+                    <Link to={`/signup`} className='text-black px-[1rem] py-[.6rem] bg-[#CBC300] rounded-xl font-[600] text-[.8rem] hover:bg-[#b00b69]'>
                         Sign Up
                     </Link>
-                    <Link to={`/login`} className='text-white px-[1rem] py-[.6rem] border-[1px] border-white rounded-xl font-[500] text-[.8rem]  hover:bg-[#ffffff] hover:text-black'>
+                    <Link to={`/login`} className='text-white px-[1rem] py-[.6rem] border-[1px] border-[#CBC300] rounded-xl font-[500] text-[.8rem]  hover:bg-[#CBC300] hover:text-black'>
                         Login
                     </Link>
                 </div>
