@@ -83,7 +83,7 @@ export function DrawerTransfer() {
             </DrawerTrigger>
             <DrawerContent>
                 <div className="mx-auto w-full max-w-sm">
-                    <DrawerHeader>
+                    <DrawerHeader className="bg-[#424000]">
                         <DrawerTitle>Make a transfer</DrawerTitle>
                         <DrawerDescription>Please fill-up the required fields</DrawerDescription>
                     </DrawerHeader>

@@ -143,7 +143,7 @@ export default function Login() {
                                         <h1 className='text-white'>Password</h1>
                                         <input onChange={handleOnChange} type="password" required name='password' className='px-[1rem] py-[.5rem] rounded-md placeholder:text-[.8rem]' placeholder='Enter your password...' />
                                     </div>
-                                    <button type='submit' className={`w-full py-[.6rem] rounded-lg  ${values?.email && values?.password ? 'text-[#ffffff]' : 'text-[#7b7b7b]'} hover:bg-[#007eff] hover:text-white duration-300 ease ${values?.email && values?.password ? 'bg-[#007eff]' : 'bg-[#dcdcdc]'} shadow-[_0_10px_15px_-3px_rgba(0,0,0,0.1)]`}>
+                                    <button type='submit' className={`w-full py-[.6rem] rounded-lg  ${values?.email && values?.password ? 'text-[#000000]' : 'text-[#000000]'} hover:bg-[#b00b69] hover:text-white duration-300 ease ${values?.email && values?.password ? 'bg-[#CBC300]' : 'bg-[#CBC300]'} shadow-[_0_10px_15px_-3px_rgba(0,0,0,0.1)]`}>
                                         Login
                                     </button>
                                     <div className="w-full flex flex-col justify-start items-start">

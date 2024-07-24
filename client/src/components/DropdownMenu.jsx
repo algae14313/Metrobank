@@ -36,7 +36,7 @@ export default function DropdownMenuDemo() {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Avatar className='cursor-pointer'>
-                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarImage src="https://avatars.githubusercontent.com/u/93489351?s=200&v=4" />
                     <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
             </DropdownMenuTrigger>
