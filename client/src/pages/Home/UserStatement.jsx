@@ -18,7 +18,7 @@ export default function UserStatement() {
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get('token');
 
-            const res = await axios.get(`${VITE_HOST}/api/unionbank/myaccount/transactions`, {
+            const res = await axios.get(`${VITE_HOST}/api/metrobank/myaccount/transactions`, {
                 headers: {
                     Authorization: `Bearer ${VITE_ADMIN_TOKEN}`,
                     accountno: token
