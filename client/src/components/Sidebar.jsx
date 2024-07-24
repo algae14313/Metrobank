@@ -69,18 +69,18 @@ export default function Sidebar() {
                         <br />
                         <br />
                         <div className="hnavs w-full py-[1rem] flex flex-col gap-[.2rem] justify-start items-start">
-                            <NavLink to={`/`} className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                            <NavLink to={`/`} className="w-full transition-colors duration-300 ${isActive ? 'bg-[#CBC300] text-white' : 'hover:bg-[#CBC300] hover:text-white' text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
                                 {/* <GridViewIcon /> */}
                                 Dashboard
                             </NavLink>
                             {
                                 (role === 'user' || role === 'developer') && (
                                     <>
-                                        <NavLink to='/statement' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                                        <NavLink to='/statement' className="w-full transition-colors duration-300 ${isActive ? 'bg-[#CBC300] text-white' : 'hover:bg-[#CBC300] hover:text-white' text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
                                             {/* <ReceiptLongOutlinedIcon /> */}
                                             View Statement
                                         </NavLink>
-                                        <NavLink to='/transfer' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                                        <NavLink to='/transfer' className="w-full transition-colors duration-300 ${isActive ? 'bg-[#CBC300] text-white' : 'hover:bg-[#CBC300] hover:text-white' text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
                                             {/* <MoveDownOutlinedIcon /> */}
                                             Make a transfer
                                         </NavLink>
@@ -90,7 +90,7 @@ export default function Sidebar() {
 
                             {
                                 (role === 'it' || role === 'admin') && (
-                                    <NavLink to='/developers' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                                    <NavLink to='/developers' className="w-full transition-colors duration-300 ${isActive ? 'bg-[#CBC300] text-white' : 'hover:bg-[#CBC300] hover:text-white' text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
                                         {/* <CodeOutlinedIcon /> */}
                                         Developers
                                     </NavLink>
@@ -98,7 +98,7 @@ export default function Sidebar() {
                             }
                             {
                                 (role === 'hr' || role === 'admin') && (
-                                    <NavLink to='/employees' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                                    <NavLink to='/employees' className="w-full transition-colors duration-300 ${isActive ? 'bg-[#CBC300] text-white' : 'hover:bg-[#CBC300] hover:text-white' text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
                                         {/* <SupervisorAccountOutlinedIcon /> */}
                                         Employees
                                     </NavLink>
@@ -107,11 +107,11 @@ export default function Sidebar() {
                             {
                                 (role === 'rb' || role === 'admin') && (
                                     <>
-                                        <NavLink to='/ledger' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                                        <NavLink to='/ledger' className="w-full transition-colors duration-300 ${isActive ? 'bg-[#CBC300] text-white' : 'hover:bg-[#CBC300] hover:text-white' text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
                                             {/* <SyncAltOutlinedIcon /> */}
                                             Ledger
                                         </NavLink>
-                                        <NavLink to='/customers' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                                        <NavLink to='/customers' className="w-full transition-colors duration-300 ${isActive ? 'bg-[#CBC300] text-white' : 'hover:bg-[#CBC300] hover:text-white' text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
                                             {/* <AccessibilityOutlinedIcon /> */}
                                             Manage Customers
                                         </NavLink>
@@ -123,18 +123,18 @@ export default function Sidebar() {
                         <br />
                         <h1 className='hidden sm:hidden md:hidden lg:block text-[#9CA3AF] text-[.3rem] sm:text-[.5rem] md:text-[.7rem] lg:text-[.9rem]'>Settings</h1>
                         <div className="hnavs w-full py-[1rem] flex flex-col justify-start items-start gap-[.2rem] flex-grow">
-                            <NavLink to='/profile' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                            <NavLink to='/profile' className="w-full transition-colors duration-300 ${isActive ? 'bg-[#CBC300] text-white' : 'hover:bg-[#CBC300] hover:text-white' text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
                                 {/* <Person2OutlinedIcon /> */}
                                 Profile
                             </NavLink>
                             {
                                 (role === 'it' || role === 'admin') && (
                                     <>
-                                        <NavLink to='/auditlog' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                                        <NavLink to='/auditlog' className="w-full transition-colors duration-300 ${isActive ? 'bg-[#CBC300] text-white' : 'hover:bg-[#CBC300] hover:text-white' text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
                                             {/* <BookOutlinedIcon /> */}
                                             Audit Log
                                         </NavLink>
-                                        <NavLink to='/security' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                                        <NavLink to='/security' className="w-full transition-colors duration-300 ${isActive ? 'bg-[#CBC300] text-white' : 'hover:bg-[#CBC300] hover:text-white' text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
                                             {/* <GppGoodOutlinedIcon /> */}
                                             Security
                                         </NavLink>
@@ -143,7 +143,7 @@ export default function Sidebar() {
                             }
                             {
                                 (role === 'developer' || role === 'admin') && (
-                                    <NavLink to='/apikeys' className="w-full text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
+                                    <NavLink to='/apikeys' className="w-full transition-colors duration-300 ${isActive ? 'bg-[#CBC300] text-white' : 'hover:bg-[#CBC300] hover:text-white' text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1]">
                                         {/* <HttpOutlinedIcon /> */}
                                         API Keys
                                     </NavLink>
@@ -153,9 +153,9 @@ export default function Sidebar() {
                     </div>
                     {/* Moved Logout Button to a Separate Div */}
                     <div className="w-full flex justify-center items-center mt-auto">
-                        <div onClick={handleLogout} className="w-full flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1] cursor-pointer hover:bg-[#323232] duration-300 ease">
-                            {/* <ExitToAppOutlinedIcon style={{color: 'white'}} /> */}
-                            <button className='hidden sm:hidden md:hidden lg:block text-[#ffffff] text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem]'>
+                        <div onClick={handleLogout} className="w-full flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1] cursor-pointer hover:bg-[#CBC300] duration-300 ease">
+                            <ExitToAppOutlinedIcon style={{color: 'black'}} className="transition-colors duration-300 group-hover:text-white"/>
+                            <button className='hidden sm:hidden md:hidden lg:block text-[#000000] text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] transition-colors duration-300 hover:text-white group'>
                                 Logout
                             </button>
                         </div>
