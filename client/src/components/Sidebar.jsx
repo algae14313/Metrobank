@@ -153,9 +153,9 @@ export default function Sidebar() {
                     </div>
                     {/* Moved Logout Button to a Separate Div */}
                     <div className="w-full flex justify-center items-center mt-auto">
-                        <div onClick={handleLogout} className="w-full flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1] cursor-pointer hover:bg-[#CBC300] duration-300 ease">
-                            <ExitToAppOutlinedIcon style={{color: 'black'}} className="transition-colors duration-300 group-hover:text-white"/>
-                            <button className='hidden sm:hidden md:hidden lg:block text-[#000000] text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] transition-colors duration-300 hover:text-white group'>
+                        <div onClick={handleLogout} className="w-full flex justify-start items-center gap-[1rem] px-[1rem] py-[.7rem] rounded-md scale-[.7] sm:scale-[.8] md:scale-[.9] lg:scale-[1] cursor-pointer hover:bg-[#FFFFFF] duration-300 ease">
+                            <ExitToAppOutlinedIcon style={{color: '#CBC300'}} className="transition-colors duration-300 group-hover:text-white"/>
+                            <button className='hidden sm:hidden md:hidden lg:block text-[#CBC300] text-[.7rem] sm:text-[.8rem] md:text-[.7rem] lg:text-[.9rem] transition-colors duration-300 hover:text-white group'>
                                 Logout
                             </button>
                         </div>
