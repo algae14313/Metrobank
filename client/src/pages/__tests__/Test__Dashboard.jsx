@@ -106,7 +106,7 @@ export default function Test__Dashboard() {
                                         <Separator className="my-4" />
                                         {
                                             usertransactionsLoading ? <Loading /> :
-                                            usertransactions
+                                            (usertransactions || [])
                                                     .filter(item => item.transactionType === 'deposit' || item.transactionType === 'withdrawal')
                                                     .reverse()
                                                     .slice(0, 10)
@@ -146,7 +146,7 @@ export default function Test__Dashboard() {
                                         <Separator className="my-4" />
                                         {
                                             usertransactionsLoading ? <Loading /> :
-                                                usertransactions
+                                            (usertransactions || [])
                                                     .filter(item => item.transactionType === 'transfer_debit' || item.transactionType === 'transfer_credit')
                                                     .reverse()
                                                     .slice(0, 10)
