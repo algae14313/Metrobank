@@ -102,7 +102,7 @@ export default function Test__UpdateProfile() {
     }
 
     useEffect(() => {
-        if (!credentialsLoading && !credentials) { navigate('/unionbank') }
+        if (!credentialsLoading && !credentials) { navigate('/metrobank') }
         if (!profiledetailsLoading && profileDetails) {
             setValues((prev) => ({
                 ...prev,
@@ -120,7 +120,7 @@ export default function Test__UpdateProfile() {
                 (role === 'admin' || role === 'it' || role === 'rb' || role === 'hr') ? <UpdateAccount /> :
                     <div className="dark:bg-[#18191a] w-full flex flex-col justify-start items-center relative overflow-x-hidden pt-[8rem]">
                         <Header />
-                        <AlertDialogs open={isDialog} onClose={handleDialogCancel} onConfirm={handleSubmit} content={`This action cannot be undone. This will update your profile in UnionBank.`} />
+                        <AlertDialogs open={isDialog} onClose={handleDialogCancel} onConfirm={handleSubmit} content={`This action cannot be undone. This will update your profile in Metrobank.`} />
                         {(profiledetailsLoading || updateLoading) && <Loading />}
                         <img src={LayerBG} alt="Blur" className='absolute top-[-2rem] left-[30rem] sm:left-[25rem] md:left-[20rem] lg:-left-[15rem] w-[20rem] h-[10rem] scale-[5]' />
                         <img src={LayerBG} alt="Blur" className='absolute top-[10rem] right-[-30rem] sm:right-[-25rem] md:right-[-20rem] lg:right-[-15rem] w-[20rem] h-[10rem] scale-[5]' />

@@ -10,7 +10,7 @@ const Log = async ({ userId, action, collectionName, documentId, changes, descri
     await AuditLog.create({ userId, action, collectionName, documentId, changes, description })
 }
 
-const dbName = 'unionbank';
+const dbName = 'metrobank';
 const mongodumpPath = '"C:\\Program Files\\MongoDB\\Tools\\100\\bin\\mongodump"';
 const mongorestorePath = '"C:\\Program Files\\MongoDB\\Tools\\100\\bin\\mongorestore"';
 
@@ -141,7 +141,7 @@ const DeveloperController = {
         try {
             const { accountno } = req.params
             const token = jwt.sign({ user: accountno }, process.env.ADMIN_TOKEN, { expiresIn: '1h' });
-            const url = `${process.env.CLIENT_ADDRESS}/unionbank/myaccount?token=${token}`;
+            const url = `${process.env.CLIENT_ADDRESS}/metrobank/myaccount?token=${token}`;
             res.json({ url });
         } catch (error) {
             res.json({ error: `GetAllTransaction in developer controller error ${error}` });

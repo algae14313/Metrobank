@@ -61,7 +61,7 @@ export default function Test__Dashboard() {
 
     useEffect(() => {
         if (!credentialsLoading && !credentials) {
-            navigate('/unionbank')
+            navigate('/metrobank')
         }
     }, [credentials, fetchAnnouncements, navigate])
 
@@ -108,7 +108,7 @@ export default function Test__Dashboard() {
                                         <div className="w-full flex justify-between items-center">
                                             <div className="flex flex-col">
                                                 <h1 className="text-[1.1rem] text-black dark:text-white font-[600]">Transactions</h1>
-                                                <h1 className="text-[.8rem] text-[#8f8f96]">Recent transactions from UnionBank.</h1>
+                                                <h1 className="text-[.8rem] text-[#8f8f96]">Recent transactions from Metrobank.</h1>
                                             </div>
                                             <Button onClick={handleViewAll} variant='secondary' size='md'>
                                                 View All

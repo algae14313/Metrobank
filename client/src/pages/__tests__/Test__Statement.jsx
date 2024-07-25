@@ -24,7 +24,7 @@ export default function Test__Statement() {
     })
 
     useEffect(() => {
-        if (!credentialsLoading && !credentials) { navigate('/unionbank') }
+        if (!credentialsLoading && !credentials) { navigate('/metrobank') }
     }, [credentials, navigate])
 
     const renderDebitCell = (params) => {
