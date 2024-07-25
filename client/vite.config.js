@@ -10,6 +10,8 @@ export default defineConfig({
         // port: '80'
         host: '192.168.68.116',
         port: '80'
+        // host: '192.168.1.34',
+        // port: '80'
     },
     resolve: {
         alias: {

@@ -43,7 +43,7 @@ const TransactionController = {
 
             const { account, amount } = req.body
             const withdrawAmount = parseFloat(amount)
-            const tax = 10
+            const tax = 1
 
             const { _id: accountId } = await AccountModel.findOne({ accountno: account })
             const { balance } = await AccountModel.findById(accountId)
@@ -85,7 +85,7 @@ const TransactionController = {
             const { debitAccount, creditAccount, amount } = req.body
 
             const transferAmount = parseFloat(amount)
-            const tax = 10
+            const tax = 1
 
             const { _id: debitAccountId } = await AccountModel.findOne({ accountno: debitAccount })
             const { _id: creditAccountId } = await AccountModel.findOne({ accountno: creditAccount })
