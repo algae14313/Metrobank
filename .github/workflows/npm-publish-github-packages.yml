@@ -1,0 +1,93 @@
+name: E-commerce Node.js CI/CD
+
+on:
+  push:
+    branches:
+      - main  # Runs on every push to the main branch
+  pull_request:
+    branches:
+      - main  # Runs on pull requests targeting the main branch
+  release:
+    types: [created]  # Runs when a release is created
+
+jobs:
+  # Job 1: Install dependencies, run tests, and build the app
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build the app
+        run: npm run build  # Adjust this to the build command for your app
+
+  # Job 2: Publish package to GitHub Packages
+  publish-gpr:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com/
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Publish package to GitHub Packages
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+  # Job 3: Deploy the app (to Heroku, AWS, or your platform of choice)
+  deploy:
+    needs: publish-gpr
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Deploy to server (example: Heroku)
+        run: |
+          # Add the commands for your deployment process here
+          # For example, deploying to Heroku could look like:
+          heroku login -i
+          git remote add heroku https://git.heroku.com/YOUR_APP_NAME.git
+          git push heroku main  # Pushes the app to Heroku
+
+      - name: Monitor the deployment (Optional: add Winston for logging)
+        run: |
+          # Commands to run Winston or any monitoring tool you use
+          # Example: You can monitor the logs during deployment for any errors or issues
+          npm run monitor-deployment  # Custom script to check app health
+
+  # Optional: Run automated tests after deployment (e.g., end-to-end tests)
+  post-deploy-tests:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run end-to-end tests
+        run: npm run e2e-tests  # Run your automated browser tests
