@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const logger = require('./src/logger.js')  // Import the logger
 const app = express()
 
 const ConnectToDatabase = require('../config/DBHandler')
@@ -22,17 +23,15 @@ ConnectToDatabase()
 app.use(express.json())
 
 app.get('/', DeveloperMiddleware.CheckDeveloperTokenValid, (req, res) => {
+    logger.info('GET request to /') // Log when a request hits the home route
     res.json({
         message: `This is Home`
     })
 })
 
 app.use('/api', UserRoute)
-
 app.use('/api', AccountRoute)
-
 app.use('/api', TransactionRoute)
-
 app.use('/api', DeveloperRoute)
 
 module.exports = app;

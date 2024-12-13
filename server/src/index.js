@@ -1,6 +1,7 @@
 const app = require('./App')
 const http = require('http');
 const socketIo = require('socket.io');
+const logger = require('./src/logger.js')  // Import the logger
 
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -12,15 +13,15 @@ const io = socketIo(server, {
 });
 
 io.on('connection', (socket) => {
-    console.log('New client connected');
+    logger.info('New client connected');  // Log when a client connects
 
     socket.on('message', (data) => {
-        console.log('Message received from client:', data)
-        io.emit('message', data);  // Changed from socket.broadcast.emit to io.emit
+        logger.info(`Message received from client: ${data}`); // Log message data
+        io.emit('message', data);  // Emit the message to all clients
     });
 
     socket.on('disconnect', () => {
-        console.log('Client disconnected');
+        logger.info('Client disconnected');  // Log when a client disconnects
     });
 });
 
@@ -28,6 +29,5 @@ const PORT = process.env.PORT || 3001;
 const HOST = process.env.devHOST;
 
 server.listen(PORT, HOST, () => {
-    console.log(`Listening: http://${HOST}:${PORT}`);
+    logger.info(`Server is listening at http://${HOST}:${PORT}`);  // Log when the server starts
 });
-
