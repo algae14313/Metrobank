@@ -7,7 +7,7 @@ export default function Maintenance({ dateFrom, dateTo, content, isButton }) {
 
     const handleLogout = () => {
         sessionStorage.clear()
-        navigate('/unionbank')
+        navigate('/metrobank')
     }
 
     return (
